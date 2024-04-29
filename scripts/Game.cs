@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Godot;
 
 public partial class Game : Node2D {
@@ -8,36 +9,52 @@ public partial class Game : Node2D {
 	public override void _Ready(){
 		_data.id = 1;
 
-		_ws.Connect("connection_established", new Callable(this, MethodName.OnConnectionEstablished));
-		_ws.Connect("connection_error", new Callable(this, MethodName.OnConnectionError));
-		_ws.Connect("connection_closed", new Callable(this, MethodName.OnConnectionClosed));
-		_ws.Connect("data_received", new Callable(this, MethodName.OnDataReceived));
-
 		var err = _ws.ConnectToUrl(_socketUrl);
 		if (err != Error.Ok) GD.Print("Connection Refused");
 	}
 
-	private void OnConnectionEstablished() {
-		GD.Print("Connected to Server");
+	public override void _PhysicsProcess(double delta) {
+		_ws.Poll();
+		var state = _ws.GetReadyState();
+		switch (state) {
+			case WebSocketPeer.State.Connecting:
+				GD.Print("Connecting to server...");
+				break;
+			case WebSocketPeer.State.Open:
+				GD.Print("Connected to server.");
+
+				var player = (Player)GetNode("%Player");
+				_data.x = player.Position.X;
+				_data.y = player.Position.Y;
+				var json = JsonConvert.SerializeObject(_data);
+				_ws.PutPacket(json.ToUtf8Buffer());
+				
+				break;
+			case WebSocketPeer.State.Closing:
+				GD.Print("Disconnecting from server...");
+				break;
+			case WebSocketPeer.State.Closed:
+				GD.Print("Disconnected from server.");
+				break;
+		}
+
+		// // Handle incoming data
+		// var data = _ws.GetPacket();
+		// if (data != null)
+		// {
+		//     string message = data.ToString();
+		//     // Process the received message (similar to OnDataReceived)
+		//     var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
+		//     string action = dict["action"] as string;
+		//     // Handle message actions as before
+		// }
 	}
 
-	private void OnConnectionError() {
-		GD.Print("Connection Error");
+	public override void _ExitTree() {
+		_ws.Close(reason: "quit");
 	}
 
-	private void OnConnectionClosed() {
-		GD.Print("Connection Closed");
-	}
-
-	private void OnDataReceived() {
-		
-	}
-
-	public override void _Process(double delta){
-		
-	}
-
-	public class PlayerData {
+	class PlayerData {
 		public float x { get; set; } = 0;
 		public float y { get; set; } = 0;
 		public int id { get; set; } = 0;
