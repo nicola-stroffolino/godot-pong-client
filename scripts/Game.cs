@@ -1,13 +1,18 @@
 using Newtonsoft.Json;
 using Godot;
+using System;
+using Godot.Collections;
 
 public partial class Game : Node2D {
 	private string _socketUrl = "ws://localhost:5000";
 	private readonly WebSocketPeer _ws = new();
-	private readonly PlayerData _data = new();
+	private readonly PlayerData _playerData = new();
+
+	private PackedScene _enemy = (PackedScene)GD.Load("res://scenes/Enemy.tscm");
+	private Array<CharacterBody2D> _enemies = new();
 
 	public override void _Ready(){
-		_data.id = 1;
+		_playerData.id = 1;
 
 		var err = _ws.ConnectToUrl(_socketUrl);
 		if (err != Error.Ok) GD.Print("Connection Refused");
@@ -21,13 +26,36 @@ public partial class Game : Node2D {
 				GD.Print("Connecting to server...");
 				break;
 			case WebSocketPeer.State.Open:
-				GD.Print("Connected to server.");
+				// GD.Print("Connected to server.");
 
 				var player = (Player)GetNode("%Player");
-				_data.x = player.Position.X;
-				_data.y = player.Position.Y;
-				var json = JsonConvert.SerializeObject(_data);
+				_playerData.x = player.Position.X;
+				_playerData.y = player.Position.Y;
+				var json = JsonConvert.SerializeObject(_playerData);
 				_ws.PutPacket(json.ToUtf8Buffer());
+
+				var message = System.Text.Encoding.Default.GetString(_ws.GetPacket());
+				var payload = JsonConvert.DeserializeObject<PlayerData[]>(message);
+
+				foreach (var enemy in _enemies) enemy.QueueFree();
+				_enemies = new();
+
+				foreach (var data in payload) {
+					if (data.id != _playerData.id) {
+						
+					}
+				}
+
+				// 	for enemy in enemies:
+				// 		enemy.queue_free()
+				// 	enemies = []
+				// 	for player in payload:
+				// 		if player.id != data["id"]:
+				// 			var e = enemy.instance()
+				// 			e.position = Vector2(player["x"], player["y"])
+				// 			enemies.append(e)
+				// 			add_child(e)
+
 				
 				break;
 			case WebSocketPeer.State.Closing:
@@ -37,21 +65,10 @@ public partial class Game : Node2D {
 				GD.Print("Disconnected from server.");
 				break;
 		}
-
-		// // Handle incoming data
-		// var data = _ws.GetPacket();
-		// if (data != null)
-		// {
-		//     string message = data.ToString();
-		//     // Process the received message (similar to OnDataReceived)
-		//     var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
-		//     string action = dict["action"] as string;
-		//     // Handle message actions as before
-		// }
 	}
 
 	public override void _ExitTree() {
-		_ws.Close(reason: "quit");
+		_ws.Close(reason: _playerData.id.ToString());
 	}
 
 	class PlayerData {
@@ -68,7 +85,7 @@ public partial class Game : Node2D {
 	// 	ws.connect('connection_closed', self, '_closed')
 	// 	ws.connect('connection_error', self, '_closed')
 	// 	ws.connect('connection_established', self, '_connected')
-	// 	ws.connect('data_received', self, '_on_data')
+	// 	ws.connect('data_received', self, '_on_playerData')
 		
 	// 	var customHeaders = PoolStringArray(["user-agent: Godot"]) 
 	// 	var err = ws.connect_to_url(URL, PoolStringArray(), false, customHeaders)
@@ -81,7 +98,7 @@ public partial class Game : Node2D {
 	// func _connected():
 	// 	print("connected to host")
 		
-	// func _on_data():
+	// func _on_playerData():
 	// 	var payload = JSON.parse(ws.get_peer(1).get_packet().get_string_from_utf8()).result
 	// 	for enemy in enemies:
 	// 		enemy.queue_free()
