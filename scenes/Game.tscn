@@ -1,11 +1,78 @@
-[gd_scene load_steps=3 format=3 uid="uid://nahgnwa5bt0n"]
+[gd_scene load_steps=2 format=3 uid="uid://nahgnwa5bt0n"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_2x0qb"]
-[ext_resource type="PackedScene" uid="uid://ueibdmuouk41" path="res://scenes/Player.tscn" id="2_8lygj"]
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("RoomName", "RoomPassword")]
 script = ExtResource("1_2x0qb")
+RoomName = NodePath("Interface/Start Menu/Panel/VBoxContainer/HBoxContainer2/RoomName")
+RoomPassword = NodePath("Interface/Start Menu/Panel/VBoxContainer/HBoxContainer3/RoomPassword")
 
-[node name="Player" parent="." instance=ExtResource("2_8lygj")]
+[node name="Interface" type="Node" parent="."]
+
+[node name="Start Menu" type="CenterContainer" parent="Interface"]
 unique_name_in_owner = true
-position = Vector2(130, 287)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Interface/Start Menu"]
+custom_minimum_size = Vector2(600, 300)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/Start Menu/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -39.5
+offset_top = -11.5
+offset_right = 39.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Header" type="Label" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Join Room"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RoomName" type="LineEdit" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 2
+placeholder_text = "Room Name"
+alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RoomPassword" type="LineEdit" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 2
+placeholder_text = "Room Password"
+alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Join Button" type="Button" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Join"
+
+[connection signal="pressed" from="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer4/Join Button" to="." method="OnJoinButtonPressed"]
