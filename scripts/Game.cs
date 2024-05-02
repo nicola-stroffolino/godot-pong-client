@@ -3,6 +3,7 @@ using Godot;
 using System;
 using Godot.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
 public partial class Game : Node2D {
 	private string _socketUrl = "ws://localhost:5000";
@@ -10,6 +11,7 @@ public partial class Game : Node2D {
 
 	private readonly PlayerData _playerData = new();
 	private readonly RandomNumberGenerator _rng = new();
+	private readonly Queue<MyDTO> _queue = new();
 
 	private readonly Room _connectedRoom;
 	private PackedScene _enemy = (PackedScene)GD.Load("res://scenes/Enemy.tscn");
@@ -22,69 +24,78 @@ public partial class Game : Node2D {
 	public LineEdit RoomPassword { get; set; } 
 
 	public override void _Ready(){
+
+	}
+
+	private void OnCreateButtonPressed() {
+		
+	}
+
+	public void OnJoinButtonPressed() {
 		var err = _ws.ConnectToUrl(_socketUrl);
 		if (err != Error.Ok) {
 			GD.Print("Connection Refused");
 			return;
 		}
-	}
 
-	public void OnJoinButtonPressed() {
 		_playerData.id = _rng.RandiRange(1, 100);
 		_rng.Randomize();
 
 		MyDTO joinRoom = new() {
 			RequestType = "Join Room",
-			Data = $@"{{ Name: ""{RoomName.Text}"", Password: ""{RoomPassword.Text}"" }}"
+			Data = new {
+				Name = RoomName.Text,
+				Password = RoomPassword.Text
+			}
 		};
 
-		while (_ws.GetReadyState() != WebSocketPeer.State.Open) {
-			GD.Print("polling");
-		}
-
-		var json = JsonConvert.SerializeObject(joinRoom);
-		_ws.PutPacket(json.ToUtf8Buffer());
+		_queue.Enqueue(joinRoom);
 	}
 
 
-	public override void _PhysicsProcess(double delta) {
+	public override void _Process(double delta) {
 		_ws.Poll();
 		
-		var state = _ws.GetReadyState();
-		switch (state) {
+		switch (_ws.GetReadyState()) {
 			case WebSocketPeer.State.Connecting:
 				GD.Print("Connecting to server...");
 				break;
 			case WebSocketPeer.State.Open:
 				// GD.Print("Connected to server.");
-
-				var player = (Player)GetNode("%Player");
-				_playerData.x = player.Position.X;
-				_playerData.y = player.Position.Y;
-				var json = JsonConvert.SerializeObject(_playerData);
-				_ws.PutPacket(json.ToUtf8Buffer());
-
-				var message = System.Text.Encoding.Default.GetString(_ws.GetPacket());
-				var payload = JsonConvert.DeserializeObject<PlayerData[]>(message);
-
-				foreach (var enemy in _enemies) enemy.QueueFree();
-				_enemies = new();
-
-				foreach (var data in payload) {
-					if (data.id != _playerData.id) {
-						var e = (CharacterBody2D)_enemy.Instantiate();
-						e.Position = new Vector2(data.x, data.y);
-						_enemies.Add(e);
-						AddChild(e);
-					}
+				
+				if(_queue.Count != 0) {
+					var el = _queue.Dequeue();
+					var json = JsonConvert.SerializeObject(el);
+					_ws.PutPacket(json.ToUtf8Buffer());
 				}
+
+				// var player = (Player)GetNode("%Player");
+				// _playerData.x = player.Position.X;
+				// _playerData.y = player.Position.Y;
+				// var json = JsonConvert.SerializeObject(_playerData);
+				// _ws.PutPacket(json.ToUtf8Buffer());
+
+				// var message = System.Text.Encoding.Default.GetString(_ws.GetPacket());
+				// var payload = JsonConvert.DeserializeObject<PlayerData[]>(message);
+
+				// foreach (var enemy in _enemies) enemy.QueueFree();
+				// _enemies = new();
+
+				// foreach (var data in payload) {
+				// 	if (data.id != _playerData.id) {
+				// 		var e = (CharacterBody2D)_enemy.Instantiate();
+				// 		e.Position = new Vector2(data.x, data.y);
+				// 		_enemies.Add(e);
+				// 		AddChild(e);
+				// 	}
+				// }
 				
 				break;
 			case WebSocketPeer.State.Closing:
 				GD.Print("Disconnecting from server...");
 				break;
 			case WebSocketPeer.State.Closed:
-				GD.Print("Disconnected from server.");
+				GD.Print("Not connected to server.");
 				break;
 		}
 	}
@@ -108,6 +119,8 @@ public partial class Game : Node2D {
 
 	class MyDTO {
 		public string RequestType { get; set; }
-		public string Data { get; set; } // JSON
+		public object Data { get; set; } // JSON
 	}
 }
+
+

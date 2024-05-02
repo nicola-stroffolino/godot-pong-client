@@ -4,8 +4,8 @@
 
 [node name="Game" type="Node2D" node_paths=PackedStringArray("RoomName", "RoomPassword")]
 script = ExtResource("1_2x0qb")
-RoomName = NodePath("Interface/Start Menu/Panel/VBoxContainer/HBoxContainer2/RoomName")
-RoomPassword = NodePath("Interface/Start Menu/Panel/VBoxContainer/HBoxContainer3/RoomPassword")
+RoomName = NodePath("Interface/Join Room Menu/Panel/VBoxContainer/HBoxContainer2/RoomName")
+RoomPassword = NodePath("Interface/Join Room Menu/Panel/VBoxContainer/HBoxContainer3/RoomPassword")
 
 [node name="Interface" type="Node" parent="."]
 
@@ -44,35 +44,211 @@ alignment = 1
 
 [node name="Header" type="Label" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Join Room"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="RoomName" type="LineEdit" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(200, 30)
-layout_mode = 2
-placeholder_text = "Room Name"
-alignment = 1
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="RoomPassword" type="LineEdit" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer3"]
-custom_minimum_size = Vector2(200, 30)
-layout_mode = 2
-placeholder_text = "Room Password"
-alignment = 1
+text = "Choose Action"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Join Button" type="Button" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer4"]
+[node name="Create Room" type="Button" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Create Room"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Interface/Start Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Back" type="Button" parent="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer5"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Join Room"
+
+[node name="Join Room Menu" type="CenterContainer" parent="Interface"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Interface/Join Room Menu"]
+custom_minimum_size = Vector2(600, 300)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/Join Room Menu/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -39.5
+offset_top = -11.5
+offset_right = 39.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/Join Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Header" type="Label" parent="Interface/Join Room Menu/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Join Room"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Interface/Join Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RoomName" type="LineEdit" parent="Interface/Join Room Menu/Panel/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 2
+placeholder_text = "Room Name"
+alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Interface/Join Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RoomPassword" type="LineEdit" parent="Interface/Join Room Menu/Panel/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 2
+placeholder_text = "Room Password"
+alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Interface/Join Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Join Button" type="Button" parent="Interface/Join Room Menu/Panel/VBoxContainer/HBoxContainer4"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Join"
 
-[connection signal="pressed" from="Interface/Start Menu/Panel/VBoxContainer/HBoxContainer4/Join Button" to="." method="OnJoinButtonPressed"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Interface/Join Room Menu/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = -19.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Interface/Join Room Menu/Panel/VBoxContainer2"]
+layout_mode = 2
+alignment = 1
+
+[node name="Join Button" type="Button" parent="Interface/Join Room Menu/Panel/VBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Back
+"
+
+[node name="Create Room Menu" type="CenterContainer" parent="Interface"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Interface/Create Room Menu"]
+custom_minimum_size = Vector2(600, 300)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/Create Room Menu/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -39.5
+offset_top = -11.5
+offset_right = 39.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/Create Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Header" type="Label" parent="Interface/Create Room Menu/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Create Room"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Interface/Create Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RoomName" type="LineEdit" parent="Interface/Create Room Menu/Panel/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 2
+placeholder_text = "Room Name"
+alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Interface/Create Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RoomPassword" type="LineEdit" parent="Interface/Create Room Menu/Panel/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 2
+placeholder_text = "Room Password"
+alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Interface/Create Room Menu/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Create Button" type="Button" parent="Interface/Create Room Menu/Panel/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Create"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Interface/Create Room Menu/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = -19.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Interface/Create Room Menu/Panel/VBoxContainer2"]
+layout_mode = 2
+alignment = 1
+
+[node name="Back" type="Button" parent="Interface/Create Room Menu/Panel/VBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Back
+"
+
+[connection signal="pressed" from="Interface/Join Room Menu/Panel/VBoxContainer/HBoxContainer4/Join Button" to="." method="OnJoinButtonPressed"]
+[connection signal="pressed" from="Interface/Create Room Menu/Panel/VBoxContainer/HBoxContainer4/Create Button" to="." method="OnCreateButtonPressed"]
