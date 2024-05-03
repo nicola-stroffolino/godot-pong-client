@@ -6,67 +6,63 @@ using System.Linq;
 using System.Collections.Generic;
 
 public partial class Game : Node2D {
-	private string _socketUrl = "ws://localhost:5000";
-	private readonly WebSocketPeer _ws = new();
+	// private string _socketUrl = "ws://localhost:5000";
+	// private readonly WebSocketPeer _ws = new();
 
-	private readonly PlayerData _playerData = new();
-	private readonly RandomNumberGenerator _rng = new();
-	private readonly Queue<MyDTO> _queue = new();
+	// private readonly PlayerData _playerData = new();
+	// private readonly RandomNumberGenerator _rng = new();
+	// private readonly Queue<MyDTO> _queue = new();
 
-	private readonly Room _connectedRoom;
+	// private readonly Room _connectedRoom;
 	private PackedScene _enemy = (PackedScene)GD.Load("res://scenes/Enemy.tscn");
 	private Array<CharacterBody2D> _enemies = new();
 
-	[ExportGroup("Room Inputs")]
-	[Export]
-	public LineEdit RoomName { get; set; }
-	[Export]
-	public LineEdit RoomPassword { get; set; } 
+	// [ExportGroup("Room Inputs")]
+	// [Export]
+	// public LineEdit RoomName { get; set; }
+	// [Export]
+	// public LineEdit RoomPassword { get; set; } 
 
 	public override void _Ready(){
 
 	}
 
-	private void OnCreateButtonPressed() {
-		
-	}
+	// public void OnJoinButtonPressed() {
+	// 	var err = GameInfo.Ws.ConnectToUrl(GameInfo.SocketUrl);
+	// 	if (err != Error.Ok) {
+	// 		GD.Print("Connection Refused");
+	// 		return;
+	// 	}
 
-	public void OnJoinButtonPressed() {
-		var err = _ws.ConnectToUrl(_socketUrl);
-		if (err != Error.Ok) {
-			GD.Print("Connection Refused");
-			return;
-		}
+	// 	_playerData.id = _rng.RandiRange(1, 100);
+	// 	_rng.Randomize();
 
-		_playerData.id = _rng.RandiRange(1, 100);
-		_rng.Randomize();
+	// 	MyDTO joinRoom = new() {
+	// 		RequestType = "Join Room",
+	// 		Data = new {
+	// 			Name = RoomName.Text,
+	// 			Password = RoomPassword.Text
+	// 		}
+	// 	};
 
-		MyDTO joinRoom = new() {
-			RequestType = "Join Room",
-			Data = new {
-				Name = RoomName.Text,
-				Password = RoomPassword.Text
-			}
-		};
-
-		_queue.Enqueue(joinRoom);
-	}
+	// 	_queue.Enqueue(joinRoom);
+	// }
 
 
 	public override void _Process(double delta) {
-		_ws.Poll();
+		GameInfo.Ws.Poll();
 		
-		switch (_ws.GetReadyState()) {
+		switch (GameInfo.Ws.GetReadyState()) {
 			case WebSocketPeer.State.Connecting:
 				GD.Print("Connecting to server...");
 				break;
 			case WebSocketPeer.State.Open:
 				// GD.Print("Connected to server.");
 				
-				if(_queue.Count != 0) {
-					var el = _queue.Dequeue();
+				if(GameInfo.Queue.Count != 0) {
+					var el = GameInfo.Queue.Dequeue();
 					var json = JsonConvert.SerializeObject(el);
-					_ws.PutPacket(json.ToUtf8Buffer());
+					GameInfo.Ws.PutPacket(json.ToUtf8Buffer());
 				}
 
 				// var player = (Player)GetNode("%Player");
@@ -101,7 +97,8 @@ public partial class Game : Node2D {
 	}
 
 	public override void _ExitTree() {
-		_ws.Close(reason: _playerData.id.ToString());
+		GameInfo.Ws.Close();
+			// reason: _playerData.id.ToString()
 	}
 
 	class PlayerData {

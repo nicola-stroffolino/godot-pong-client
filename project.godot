@@ -11,13 +11,15 @@ config_version=5
 [application]
 
 config/name="Pong Multiplayer"
-run/main_scene="res://scenes/Game.tscn"
+run/main_scene="res://scenes/start_menu.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-GameInfo="*res://scripts/GameInfo.cs"
+GameInfo="*res://singletons/GameInfo.cs"
+Scenes="*res://singletons/Scenes.cs"
+PlayerInfo="*res://singletons/PlayerInfo.cs"
 
 [display]
 
