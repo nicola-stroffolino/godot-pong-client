@@ -1,6 +1,22 @@
 [gd_scene load_steps=2 format=3 uid="uid://nahgnwa5bt0n"]
 
-[ext_resource type="Script" path="res://scripts/Game.cs" id="1_2x0qb"]
+[ext_resource type="Script" path="res://scripts/Game.cs" id="1_7j5dp"]
 
 [node name="Game" type="Node2D"]
-script = ExtResource("1_2x0qb")
+script = ExtResource("1_7j5dp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RoomId" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PlayerId" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Nickname" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2

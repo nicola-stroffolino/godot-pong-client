@@ -1,5 +1,9 @@
 using Godot;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Net.WebSockets;
+using System.Text.Json;
 
 public partial class CreateRoomMenu : CenterContainer {
 	private LineEdit _nameInput;
@@ -34,10 +38,12 @@ public partial class CreateRoomMenu : CenterContainer {
 			}
 		};
 		
-		var err = GameInfo.Ws.ConnectToUrl(GameInfo.SocketUrl);
-		if (err != Error.Ok) {
-			GD.Print("Connection Refused");
-			return;
+		if (GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Closed) {
+			var err = GameInfo.Ws.ConnectToUrl(GameInfo.SocketUrl);
+			if (err != Error.Ok) {
+				GD.Print("Connection Refused");
+				return;
+			}
 		}
 		
 		GameInfo.Queue.Enqueue(createRoom);
@@ -46,4 +52,30 @@ public partial class CreateRoomMenu : CenterContainer {
 	public void OnBackButtonPressed() {
 		GetTree().ChangeSceneToPacked(Scenes.StartMenu);
 	}
+
+    public override void _Process(double delta) {
+		GameInfo.Ws.Poll();
+		if (GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Open) {
+			if(GameInfo.Queue.Count != 0) {
+				var el = GameInfo.Queue.Dequeue();
+				var json = JsonConvert.SerializeObject(el);
+				GameInfo.Ws.PutPacket(json.ToUtf8Buffer());
+			}
+
+			var message = System.Text.Encoding.Default.GetString(GameInfo.Ws.GetPacket());
+			var payload = JsonConvert.DeserializeObject<JObject>(message);
+
+			if (payload is null) return;
+
+			if (payload["error"] != null) {
+				GD.Print(payload["error"]);
+			} else if (payload["room"] != null && payload["player"] != null) {
+				PlayerInfo.ConnectedRoomId = (string)payload["room"]["id"];
+				PlayerInfo.Id = (int)payload["player"]["id"];
+				PlayerInfo.Nickname = (string)payload["player"]["nickname"];
+
+				GetTree().ChangeSceneToPacked(Scenes.Game);
+			}
+		}
+    }
 }
