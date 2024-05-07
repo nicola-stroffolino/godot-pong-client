@@ -1,2 +1,2 @@
-# Godot Uno Client
-Uno multiplayer game made in godot.
+# Godot UNO Client
+UNO multiplayer game made in godot.
