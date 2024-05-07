@@ -4,12 +4,12 @@ using System;
 using Godot.Collections;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 public partial class Game : Node2D {
 	// private string _socketUrl = "ws://localhost:5000";
 	// private readonly WebSocketPeer _ws = new();
 
-	private readonly PlayerData _playerData = new();
 	// private readonly RandomNumberGenerator _rng = new();
 	// private readonly Queue<MyDTO> _queue = new();
 
@@ -18,7 +18,8 @@ public partial class Game : Node2D {
 	private PackedScene _enemy = (PackedScene)GD.Load("res://scenes/enemy.tscn");
 
 	private Player _plr;
-	private Array<CharacterBody2D> _enemies = new();
+	private Enemy _enm;
+	// private Array<CharacterBody2D> _enemies = new();
 
 	// [ExportGroup("Room Inputs")]
 	// [Export]
@@ -27,7 +28,7 @@ public partial class Game : Node2D {
 	// public LineEdit RoomPassword { get; set; } 
 
 	public override void _Ready(){
-		GetNode<Label>("%RoomId").Text = PlayerInfo.ConnectedRoomId;
+		GetNode<Label>("%RoomId").Text = PlayerInfo.ConnectedRoomName;
 		GetNode<Label>("%PlayerId").Text = PlayerInfo.Id.ToString();
 		GetNode<Label>("%Nickname").Text = PlayerInfo.Nickname;
 
@@ -52,27 +53,36 @@ public partial class Game : Node2D {
 		// 		}
 		
 		if(GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Open) {
-			_playerData.x = _plr.Position.X;
-			_playerData.y = _plr.Position.Y;
-			var json = JsonConvert.SerializeObject(_playerData);
-			
+            
+			/* --- Send Data --- */
+			MyDTO _playerData = new() {
+				RequestType = "Player Move",
+				Data = new {
+					// roomName = PlayerInfo.ConnectedRoomName,
+					id = PlayerInfo.Id,
+					x = _plr.Position.X,
+					y = _plr.Position.Y
+				}
+            };
+
+            var json = JsonConvert.SerializeObject(_playerData);
 			GameInfo.Ws.PutPacket(json.ToUtf8Buffer());
+
+			/* --- Receive Data --- */
+			var message = System.Text.Encoding.Default.GetString(GameInfo.Ws.GetPacket());
+			var payload = JsonConvert.DeserializeObject<JObject>(message);
+
+			if (payload is not null) {
+				if (_enm is null) {
+					_enm = _enemy.Instantiate() as Enemy;
+					AddChild(_enm);
+				}
+				_enm.Position = new Vector2((float)payload["x"], (float)payload["y"]);
+			}
+
 		}
 
-		// 		// var message = System.Text.Encoding.Default.GetString(_ws.GetPacket());
-		// 		// var payload = JsonConvert.DeserializeObject<PlayerData[]>(message);
 
-		// 		// foreach (var enemy in _enemies) enemy.QueueFree();
-		// 		// _enemies = new();
-
-		// 		// foreach (var data in payload) {
-		// 		// 	if (data.id != _playerData.id) {
-		// 		// 		var e = (CharacterBody2D)_enemy.Instantiate();
-		// 		// 		e.Position = new Vector2(data.x, data.y);
-		// 		// 		_enemies.Add(e);
-		// 		// 		AddChild(e);
-		// 		// 	}
-		// 		// }
 				
 		// 		break;
 		// 	case WebSocketPeer.State.Closing:
@@ -86,7 +96,6 @@ public partial class Game : Node2D {
 
 	public override void _ExitTree() {
 		GameInfo.Ws.Close();
-			// reason: _playerData.id.ToString()
 	}
 
 	class PlayerData {

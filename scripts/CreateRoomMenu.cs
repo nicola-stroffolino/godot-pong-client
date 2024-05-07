@@ -39,6 +39,7 @@ public partial class CreateRoomMenu : CenterContainer {
 		};
 		
 		if (GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Closed) {
+            GameInfo.Ws.HandshakeHeaders = new string[] { "user-agent: Godot" };
 			var err = GameInfo.Ws.ConnectToUrl(GameInfo.SocketUrl);
 			if (err != Error.Ok) {
 				GD.Print("Connection Refused");
@@ -70,7 +71,7 @@ public partial class CreateRoomMenu : CenterContainer {
 			if (payload["error"] != null) {
 				GD.Print(payload["error"]);
 			} else if (payload["room"] != null && payload["player"] != null) {
-				PlayerInfo.ConnectedRoomId = (string)payload["room"]["id"];
+				PlayerInfo.ConnectedRoomName = (string)payload["room"]["name"];
 				PlayerInfo.Id = (int)payload["player"]["id"];
 				PlayerInfo.Nickname = (string)payload["player"]["nickname"];
 
