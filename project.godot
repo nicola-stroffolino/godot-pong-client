@@ -29,3 +29,7 @@ window/size/viewport_height=338
 [dotnet]
 
 project/assembly_name="Pong_Multiplayer"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

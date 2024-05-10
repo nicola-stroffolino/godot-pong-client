@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cp050bve105iw"]
+
+[ext_resource type="Texture2D" uid="uid://bxxdquxfelbsf" path="res://assets/cards.png" id="1_1olpc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r1lnj"]
+atlas = ExtResource("1_1olpc")
+region = Rect2(34, 0, 32, 48)
+
+[node name="Card" type="Button"]
+custom_minimum_size = Vector2(32, 48)
+offset_right = 32.0
+offset_bottom = 48.0
+flat = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 48.0
+texture = SubResource("AtlasTexture_r1lnj")

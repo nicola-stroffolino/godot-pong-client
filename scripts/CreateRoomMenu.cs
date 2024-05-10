@@ -12,7 +12,7 @@ public partial class CreateRoomMenu : CenterContainer {
 	private Button _createBtn;
 	private Button _backBtn;
 
-    public override void _Ready() {
+	public override void _Ready() {
 		_nameInput = GetNode<LineEdit>("%NameInput");
 		_passwordInput = GetNode<LineEdit>("%PasswordInput");
 		_nicknameInput = GetNode<LineEdit>("%NicknameInput");
@@ -21,7 +21,7 @@ public partial class CreateRoomMenu : CenterContainer {
 
 		_createBtn.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.OnCreateButtonPressed));
 		_backBtn.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.OnBackButtonPressed));
-    }
+	}
 
 	public void OnCreateButtonPressed() {
 		var name = _nameInput.Text;
@@ -39,7 +39,7 @@ public partial class CreateRoomMenu : CenterContainer {
 		};
 		
 		if (GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Closed) {
-            GameInfo.Ws.HandshakeHeaders = new string[] { "user-agent: Godot" };
+			GameInfo.Ws.HandshakeHeaders = new string[] { "user-agent: Godot" };
 			var err = GameInfo.Ws.ConnectToUrl(GameInfo.SocketUrl);
 			if (err != Error.Ok) {
 				GD.Print("Connection Refused");
@@ -54,7 +54,7 @@ public partial class CreateRoomMenu : CenterContainer {
 		GetTree().ChangeSceneToPacked(Scenes.StartMenu);
 	}
 
-    public override void _Process(double delta) {
+	public override void _Process(double delta) {
 		GameInfo.Ws.Poll();
 		if (GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Open) {
 			if(GameInfo.Queue.Count != 0) {
@@ -78,5 +78,5 @@ public partial class CreateRoomMenu : CenterContainer {
 				GetTree().ChangeSceneToPacked(Scenes.Game);
 			}
 		}
-    }
+	}
 }

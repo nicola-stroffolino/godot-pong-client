@@ -53,7 +53,7 @@ public partial class Game : Node2D {
 		// 		}
 		
 		if(GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Open) {
-            
+			
 			/* --- Send Data --- */
 			MyDTO _playerData = new() {
 				RequestType = "Player Move",
@@ -63,9 +63,9 @@ public partial class Game : Node2D {
 					x = _plr.Position.X,
 					y = _plr.Position.Y
 				}
-            };
+			};
 
-            var json = JsonConvert.SerializeObject(_playerData);
+			var json = JsonConvert.SerializeObject(_playerData);
 			GameInfo.Ws.PutPacket(json.ToUtf8Buffer());
 
 			/* --- Receive Data --- */
