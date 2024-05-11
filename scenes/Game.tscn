@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://nahgnwa5bt0n"]
+[gd_scene load_steps=3 format=3 uid="uid://nahgnwa5bt0n"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_7j5dp"]
+[ext_resource type="Script" path="res://scripts/CardSpawner.cs" id="2_g8i20"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_7j5dp")
@@ -20,3 +21,7 @@ layout_mode = 2
 [node name="Nickname" type="Label" parent="VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="CardSpawner" type="Node2D" parent="."]
+position = Vector2(202, 183)
+script = ExtResource("2_g8i20")

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NumberCardData" load_steps=4 format=3 uid="uid://babmofv64cxxx"]
+
+[ext_resource type="Script" path="res://resources/NumberCardData.cs" id="1_v1clk"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_oaenj"]
+load_path = "res://.godot/imported/cards.png-21f78aac1038cb68f786208e14a77869.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ruj26"]
+atlas = SubResource("CompressedTexture2D_oaenj")
+region = Rect2(68, 0, 32, 48)
+
+[resource]
+script = ExtResource("1_v1clk")
+Value = 0
+Color = 2
+Texture = SubResource("AtlasTexture_ruj26")
