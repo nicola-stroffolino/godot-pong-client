@@ -72,6 +72,7 @@ public partial class JoinRoomMenu : CenterContainer {
 				PlayerInfo.ConnectedRoomName = (string)payload["room"]["name"];
 				PlayerInfo.Id = (int)payload["player"]["id"];
 				PlayerInfo.Nickname = (string)payload["player"]["nickname"];
+				
 
 				GetTree().ChangeSceneToPacked(Scenes.Game);
 			}

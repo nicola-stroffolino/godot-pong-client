@@ -1,18 +1,27 @@
 [gd_scene load_steps=3 format=3 uid="uid://cp050bve105iw"]
 
 [ext_resource type="Script" path="res://scripts/Card.cs" id="1_pweix"]
-[ext_resource type="Texture2D" uid="uid://dlbrxmxlvr44" path="res://resources/textures/cards_atlas_texture.tres" id="2_mex1v"]
+[ext_resource type="Texture2D" uid="uid://nk7d02a3e0rv" path="res://resources/textures/0.tres" id="2_4qm55"]
 
 [node name="Card" type="Button"]
 custom_minimum_size = Vector2(32, 48)
 offset_right = 32.0
 offset_bottom = 48.0
+pivot_offset = Vector2(16, 48)
+size_flags_horizontal = 4
+size_flags_vertical = 4
 flat = true
 script = ExtResource("1_pweix")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 48.0
+color = Color(0.847059, 0, 0, 1)
 
 [node name="Texture" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
 offset_right = 32.0
 offset_bottom = 48.0
-texture = ExtResource("2_mex1v")
+texture = ExtResource("2_4qm55")
