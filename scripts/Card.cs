@@ -11,10 +11,12 @@ public partial class Card : Button {
 		{ CardColor.Wild, 	new Color(0xFFFFFFFF) }
 	};
 	public CardData Data { get; set; }
+	[Signal] public delegate void CardClickedEventHandler(Card card, Marker2D parent);
 
 	public override void _Ready() {
 		// Connect(SignalName.ButtonDown, new Callable(this, MethodName.OnButtonDown));
 		// Connect(SignalName.ButtonUp, new Callable(this, MethodName.OnButtonUp));
+		Connect(SignalName.Pressed, new Callable(this, MethodName.OnCardClicked));
 	}
 
 	public override void _Process(double delta) {
@@ -23,6 +25,10 @@ public partial class Card : Button {
 	// public void OnButtonDown();
 
 	// public void OnButtonUp();
+
+	public void OnCardClicked() {
+		EmitSignal(SignalName.CardClicked, this, GetParent());
+	}
 
 	public Card CreateCard(CardData data) {
 		Data = data;

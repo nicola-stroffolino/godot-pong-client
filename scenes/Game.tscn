@@ -37,5 +37,12 @@ pivot_offset = Vector2(40, 0)
 horizontal_alignment = 2
 
 [node name="CardSpawner" type="Node2D" parent="."]
-position = Vector2(310, 326)
 script = ExtResource("2_g8i20")
+
+[node name="OppCardSpawn" type="Marker2D" parent="CardSpawner"]
+unique_name_in_owner = true
+position = Vector2(330, 119)
+
+[node name="CardSpawn" type="Marker2D" parent="CardSpawner"]
+unique_name_in_owner = true
+position = Vector2(330, 326)
