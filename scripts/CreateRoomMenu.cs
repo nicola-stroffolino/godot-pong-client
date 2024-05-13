@@ -74,6 +74,7 @@ public partial class CreateRoomMenu : CenterContainer {
 				PlayerInfo.ConnectedRoomName = (string)payload["room"]["name"];
 				PlayerInfo.Id = (int)payload["player"]["id"];
 				PlayerInfo.Nickname = (string)payload["player"]["nickname"];
+				PlayerInfo.IsYourTurn = true;
 
 				GetTree().ChangeSceneToPacked(Scenes.Game);
 			}

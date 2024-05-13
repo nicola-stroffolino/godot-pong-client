@@ -10,7 +10,7 @@ public partial class JoinRoomMenu : CenterContainer {
 	private Button _joinBtn;
 	private Button _backBtn;
 
-    public override void _Ready() {
+	public override void _Ready() {
 		_nameInput = GetNode<LineEdit>("%NameInput");
 		_passwordInput = GetNode<LineEdit>("%PasswordInput");
 		_nicknameInput = GetNode<LineEdit>("%NicknameInput");
@@ -19,7 +19,7 @@ public partial class JoinRoomMenu : CenterContainer {
 
 		_joinBtn.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.OnJoinButtonPressed));
 		_backBtn.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.OnBackButtonPressed));
-    }
+	}
 
 	public void OnJoinButtonPressed() {
 		var name = _nameInput.Text;
@@ -72,7 +72,7 @@ public partial class JoinRoomMenu : CenterContainer {
 				PlayerInfo.ConnectedRoomName = (string)payload["room"]["name"];
 				PlayerInfo.Id = (int)payload["player"]["id"];
 				PlayerInfo.Nickname = (string)payload["player"]["nickname"];
-				
+				PlayerInfo.IsYourTurn = false;
 
 				GetTree().ChangeSceneToPacked(Scenes.Game);
 			}

@@ -7,30 +7,15 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class CardSpawner : Node2D {
-	public List<Card> Hand { get; set; } = new();
-	public List<Card> OppHand { get; set; } = new();
+	public Marker2D CardSpawn { get; set; }
+	public Marker2D OppCardSpawn { get; set; }
+	public Marker2D PlayedCardSpawn { get; set; }
+	private Tween _tween;
 
 	public override void _Ready() {
-		// foreach (var resName in DirAccess.GetFilesAt("res://resources/cards")) {
-		// 	var newCard = (Card)(GD.Load("res://scenes/card.tscn") as PackedScene).Instantiate();
-		// 	newCard.Data = (CardData)GD.Load("res://resources/cards/" + resName);
-		// 	CardList[resName.Split('.')[0]] = newCard;
-		// }
-
-		// var card = (Card)(GD.Load("res://scenes/card.tscn") as PackedScene).Instantiate();
-		// for (int i = 0; i < 9; i++) {
-		// 	for (int j = 0; j < 4; j++) {
-		// 		NumberCardData newCardData = new() {
-		// 			Value = i,
-		// 			Color = (CardColor)j
-		// 		};
-		// 		var newCard = card.CreateCard(newCardData);
-				
-		// 		CardList[i.ToString() + '_' + j.ToString()] = newCard;	
-		// 	}
-		// }
-
-		// SpreadCards(0, 200, 100);   
+		CardSpawn = (Marker2D)GetNode("%CardSpawn");
+		OppCardSpawn = (Marker2D)GetNode("%OppCardSpawn");
+		PlayedCardSpawn = (Marker2D)GetNode("%PlayedCardSpawn");
 	}
 
 	public override void _Process(double delta) {
@@ -38,44 +23,45 @@ public partial class CardSpawner : Node2D {
 		var payload = JsonConvert.DeserializeObject<JObject>(message);
 
 		if (payload is not null) {
-			if (payload["draw"] is not null && payload["oppDrawNumber"] is not null) {
+			if (payload["draw"] is not null && payload["oppDrawNumber"] is not null && payload["playedCard"] is not null) {
 				GD.Print(payload);
+				PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
+				
 				var drawnCards = payload["draw"].ToObject<string[]>();
-				foreach (var card in drawnCards) {
-					var cardInfo = card.Split('_');
-					var color = cardInfo[0];
-					var value = cardInfo[1];
-
-					Card newCard = (Card)(GD.Load("res://scenes/card.tscn") as PackedScene).Instantiate();
-					CardData newCardData = new() {
-						Value = value,
-						Color = (CardColor)Enum.Parse(typeof(CardColor), color)
-					};
-					newCard = newCard.CreateCard(newCardData);
+				foreach (var cardName in drawnCards) {
+					var newCard = (Card)cardScn.Instantiate();
+					newCard.CreateCard(cardName);
 					newCard.Connect(Card.SignalName.CardClicked, new Callable(this, MethodName.DespawnCard));
 					
-					Hand.Add(newCard);
+					CardSpawn.AddChild(newCard);
 				}
 				
 				var enemyCardsNumber = (int)payload["oppDrawNumber"];
 				for (int i = 0; i < enemyCardsNumber; i++) {
-					Card newCard = (Card)(GD.Load("res://scenes/card.tscn") as PackedScene).Instantiate();
-					CardData newCardData = new() {
-						Value = "Back",
-						Color = CardColor.Wild
-					};
-					newCard = newCard.CreateCard(newCardData);
+					var newCard = (Card)cardScn.Instantiate();
+					newCard.CreateCard("Wild_Back");
 					
-					OppHand.Add(newCard);
+					OppCardSpawn.AddChild(newCard);
 				}
+
+				var playedCard = (Card)cardScn.Instantiate();
+				playedCard.CreateCard((string)payload["playedCard"]);
+				GameInfo.PlayedCard = playedCard;
+				PlayedCardSpawn.AddChild(playedCard);
 				
-				SpreadCards(-100, 100, 100, (Marker2D)GetNode("%CardSpawn"), Hand);
-				SpreadCards(-100, 100, 100, (Marker2D)GetNode("%OppCardSpawn"), OppHand);
+				SpreadCards(-100, 100, 100, CardSpawn);
+				SpreadCards(-100, 100, 100, OppCardSpawn);
+			} else if (payload["newColor"] is not null && payload["newValue"] is not null) {
+				PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
+				GameInfo.PlayedCard = (Card)cardScn.Instantiate();
+				GameInfo.PlayedCard.CreateCard($"{payload["newColor"]}_{payload["newValue"]}");
+				
+				PlayedCardSpawn.AddChild(GameInfo.PlayedCard);
 			}
 		}
 	}
 
-	public void SpreadCards(float x1, float x2, float k, Marker2D node, List<Card> cardList) {
+	public void SpreadCards(float x1, float x2, float k, Marker2D node) {
 		var shift = 0f;
 		if (x1 < 0 && x2 > 0) {
 			shift = x1;
@@ -90,14 +76,14 @@ public partial class CardSpawner : Node2D {
 
 		var r = (x2 - x1) / 2 + k;
 		var @base = (x2 - x1) / 2;
-		var step = (x2 - x1) / (cardList.Count -1);
+		var step = (x2 - x1) / (node.GetChildCount() - 1);
 		var angle = MathF.Atan2(@base, GetUntranslatedArch(r, @base, x2));
 
 		var cardIdx = 0;
 		for (var x = x1; x <= x2; x += step, cardIdx++) {
 			var y = GetUntranslatedArch(r, @base, x) - (MathF.Sin(angle) * r);
 
-			var card = cardList.ElementAt(cardIdx);
+			var card = (Card)node.GetChild(cardIdx);
 			card.Position = new Vector2(x + shift, -y);
 			var rotation = -Mathf.Atan(Mathf.Sqrt(4 * r * r - Mathf.Pow(2 * x - x2 + x1, 2)) / (2 * x - x2 + x1));
 
@@ -111,8 +97,16 @@ public partial class CardSpawner : Node2D {
 	}
 
 	public void DespawnCard(Card card, Marker2D parent) {
-		Hand.Remove(card);
 		card.QueueFree();
-		SpreadCards(-100, 100, 100, parent, Hand);
+		SpreadCards(-100, 100, 100, parent);
+	}
+
+	public void DrawCards(Vector2 fromPos, int number) {
+		if (_tween is not null && _tween.IsRunning()) _tween.Kill();
+
+		_tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+		for (int i = 0; i < number; i++) {
+			// to be implemented
+		}
 	}
 }

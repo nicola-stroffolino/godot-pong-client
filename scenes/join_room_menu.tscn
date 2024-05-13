@@ -47,6 +47,7 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 30)
 layout_mode = 2
+text = "Prova"
 placeholder_text = "Room Name"
 alignment = 1
 
@@ -58,6 +59,7 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 30)
 layout_mode = 2
+text = "12345"
 placeholder_text = "Room Password"
 alignment = 1
 
@@ -69,6 +71,7 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 30)
 layout_mode = 2
+text = "Peppe"
 placeholder_text = "Your Nickname"
 alignment = 1
 

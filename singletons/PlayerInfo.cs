@@ -5,6 +5,5 @@ public partial class PlayerInfo : Node {
     public static string Nickname { get; set; }
     public static string Opponent { get; set; }
     public static string ConnectedRoomName { get; set; }
-    
-    // public static Room ConnectedRoom { get; set; }
+    public static bool IsYourTurn { get; set; }
 }

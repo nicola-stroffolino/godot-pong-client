@@ -5,9 +5,11 @@
 
 [node name="Card" type="Button"]
 custom_minimum_size = Vector2(32, 48)
-offset_right = 32.0
-offset_bottom = 48.0
-pivot_offset = Vector2(16, 48)
+offset_left = -16.0
+offset_top = -24.0
+offset_right = 16.0
+offset_bottom = 24.0
+pivot_offset = Vector2(16, 24)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 flat = true

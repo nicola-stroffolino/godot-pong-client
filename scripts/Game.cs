@@ -7,14 +7,22 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 public partial class Game : Node2D {
+	private Label _cardColorLbl;
+	private Label _cardValueLbl;
 	public override void _Ready(){
 		GetNode<Label>("%Room").Text = PlayerInfo.ConnectedRoomName;
 		GetNode<Label>("%Opponent").Text = PlayerInfo.Opponent;
 		GetNode<Label>("%Nickname").Text = PlayerInfo.Nickname;
+		_cardColorLbl = GetNode<Label>("%CardColor");
+		_cardValueLbl = GetNode<Label>("%CardValue");
 	}
 
 	public override void _Process(double delta) {
 		GameInfo.Ws.Poll();
+		if (GameInfo.PlayedCard is not null) {
+			_cardColorLbl.Text = Enum.GetName(typeof(CardColor), GameInfo.PlayedCard.Color);
+			_cardValueLbl.Text = GameInfo.PlayedCard.Value;
+		}
 				
 		if(GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Open) {
 			
