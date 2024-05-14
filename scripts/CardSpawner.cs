@@ -23,8 +23,8 @@ public partial class CardSpawner : Node2D {
 		var payload = JsonConvert.DeserializeObject<JObject>(message);
 
 		if (payload is not null) {
+			GD.Print(payload + " - " + GameInfo.Ws.GetReadyState());
 			if (payload["draw"] is not null && payload["oppDrawNumber"] is not null && payload["playedCard"] is not null) {
-				GD.Print(payload);
 				PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
 				
 				var drawnCards = payload["draw"].ToObject<string[]>();
@@ -51,7 +51,10 @@ public partial class CardSpawner : Node2D {
 				
 				SpreadCards(-100, 100, 100, CardSpawn);
 				SpreadCards(-100, 100, 100, OppCardSpawn);
-			} else if (payload["newColor"] is not null && payload["newValue"] is not null) {
+			}
+			
+			if (payload["newColor"] is not null && payload["newValue"] is not null) {
+				GD.Print("E stata giocata una carta.");
 				PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
 				GameInfo.PlayedCard = (Card)cardScn.Instantiate();
 				GameInfo.PlayedCard.CreateCard($"{payload["newColor"]}_{payload["newValue"]}");

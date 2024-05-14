@@ -31,12 +31,10 @@ public partial class Card : Button {
 			RequestType = "Play Card",
 			Data = new {
 				Name = Name,
-				Color = Color,
-				Value = Color
+				Color = GetColorString(),
+				Value = Value
 			}
 		};
-
-		GD.Print(Name, Color, Color);
 
 		GameInfo.Queue.Enqueue(playedCard);
 	}
@@ -50,8 +48,8 @@ public partial class Card : Button {
 		Color = (CardColor)Enum.Parse(typeof(CardColor), color);
 		Value = value;
 
-		var textureNode = GetNode("Texture") as TextureRect;
-		var backgroundNode = GetNode("Background") as ColorRect;
+		var textureNode = (TextureRect)GetNode("Texture");
+		var backgroundNode = (ColorRect)GetNode("Background");
 
 		textureNode.Texture = (AtlasTexture)GD.Load("res://resources/textures/" + Value + ".tres");
 		backgroundNode.Color = CardColors[Color];
@@ -59,10 +57,12 @@ public partial class Card : Button {
 
 	public bool CanBePlayed() => 
 		PlayerInfo.IsYourTurn &&
-		(GameInfo.PlayedCard == null ||
-		Color == GameInfo.PlayedCard.Color ||
+		(GameInfo.PlayedCard.Color == CardColor.Wild ||
 		Color == CardColor.Wild ||
+		Color == GameInfo.PlayedCard.Color ||
 		Value == GameInfo.PlayedCard.Value);
+
+	public string GetColorString() => Enum.GetName(typeof(CardColor), Color);
 }
 
 public enum CardColor {

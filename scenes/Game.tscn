@@ -59,7 +59,7 @@ position = Vector2(330, 119)
 
 [node name="CardSpawn" type="Marker2D" parent="CardSpawner"]
 unique_name_in_owner = true
-position = Vector2(330, 326)
+position = Vector2(330, 349)
 
 [node name="PlayedCardSpawn" type="Marker2D" parent="CardSpawner"]
 unique_name_in_owner = true
