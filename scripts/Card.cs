@@ -16,6 +16,8 @@ public partial class Card : Button {
 	public string Value { get; set; }
 	public CardColor Color { get; set; }
 
+	private Tween _tween;
+
 	public override void _Ready() {
 		Connect(SignalName.Pressed, new Callable(this, MethodName.OnCardClicked));
 	}
@@ -57,7 +59,7 @@ public partial class Card : Button {
 	}
 
 	public bool CanBePlayed() => 
-		PlayerInfo.IsYourTurn &&
+		PlayerInfo.IsYourTurn && GameInfo.PlayedCard is not null &&
 		(GameInfo.PlayedCard.Color == CardColor.Wild ||
 		Color == CardColor.Wild ||
 		Color == GameInfo.PlayedCard.Color ||

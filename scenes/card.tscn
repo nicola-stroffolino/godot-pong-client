@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cp050bve105iw"]
 
 [ext_resource type="Script" path="res://scripts/Card.cs" id="1_pweix"]
-[ext_resource type="Texture2D" uid="uid://nk7d02a3e0rv" path="res://resources/textures/0.tres" id="2_4qm55"]
+[ext_resource type="Texture2D" uid="uid://bxw5wctkxoknj" path="res://resources/textures/Back.tres" id="2_w2amt"]
 
 [node name="Card" type="Button"]
 custom_minimum_size = Vector2(32, 48)
@@ -26,4 +26,4 @@ layout_mode = 1
 anchors_preset = -1
 offset_right = 32.0
 offset_bottom = 48.0
-texture = ExtResource("2_4qm55")
+texture = ExtResource("2_w2amt")
