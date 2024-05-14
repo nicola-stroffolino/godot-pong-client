@@ -19,49 +19,7 @@ public partial class CardSpawner : Node2D {
 	}
 
 	public override void _Process(double delta) {
-		var message = System.Text.Encoding.Default.GetString(GameInfo.Ws.GetPacket());
-		var payload = JsonConvert.DeserializeObject<JObject>(message);
 
-		if (payload is not null) {
-			GD.Print(payload + " - " + GameInfo.Ws.GetReadyState());
-			if (payload["draw"] is not null && payload["oppDrawNumber"] is not null && payload["playedCard"] is not null) {
-				PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
-				
-				var drawnCards = payload["draw"].ToObject<string[]>();
-				foreach (var cardName in drawnCards) {
-					var newCard = (Card)cardScn.Instantiate();
-					newCard.CreateCard(cardName);
-					newCard.Connect(Card.SignalName.CardClicked, new Callable(this, MethodName.DespawnCard));
-					
-					CardSpawn.AddChild(newCard);
-				}
-				
-				var enemyCardsNumber = (int)payload["oppDrawNumber"];
-				for (int i = 0; i < enemyCardsNumber; i++) {
-					var newCard = (Card)cardScn.Instantiate();
-					newCard.CreateCard("Wild_Back");
-					
-					OppCardSpawn.AddChild(newCard);
-				}
-
-				var playedCard = (Card)cardScn.Instantiate();
-				playedCard.CreateCard((string)payload["playedCard"]);
-				GameInfo.PlayedCard = playedCard;
-				PlayedCardSpawn.AddChild(playedCard);
-				
-				SpreadCards(-100, 100, 100, CardSpawn);
-				SpreadCards(-100, 100, 100, OppCardSpawn);
-			}
-			
-			if (payload["newColor"] is not null && payload["newValue"] is not null) {
-				GD.Print("E stata giocata una carta.");
-				PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
-				GameInfo.PlayedCard = (Card)cardScn.Instantiate();
-				GameInfo.PlayedCard.CreateCard($"{payload["newColor"]}_{payload["newValue"]}");
-				
-				PlayedCardSpawn.AddChild(GameInfo.PlayedCard);
-			}
-		}
 	}
 
 	public void SpreadCards(float x1, float x2, float k, Marker2D node) {
@@ -111,5 +69,41 @@ public partial class CardSpawner : Node2D {
 		for (int i = 0; i < number; i++) {
 			// to be implemented
 		}
+	}
+
+	public void StartGame(string[] drawnCards, int oppDrawNumber, string playedCardString) {
+		PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
+					
+		foreach (var cardName in drawnCards) {
+			var newCard = (Card)cardScn.Instantiate();
+			newCard.CreateCard(cardName);
+			newCard.Connect(Card.SignalName.CardClicked, new Callable(this, MethodName.DespawnCard));
+			
+			CardSpawn.AddChild(newCard);
+		}
+		
+		for (int i = 0; i < oppDrawNumber; i++) {
+			var newCard = (Card)cardScn.Instantiate();
+			newCard.CreateCard("Wild_Back");
+			
+			OppCardSpawn.AddChild(newCard);
+		}
+
+		var playedCard = (Card)cardScn.Instantiate();
+		playedCard.CreateCard(playedCardString);
+		GameInfo.PlayedCard = playedCard;
+		PlayedCardSpawn.AddChild(playedCard);
+		
+		SpreadCards(-100, 100, 100, CardSpawn);
+		SpreadCards(-100, 100, 100, OppCardSpawn);
+	}
+
+	public void PlacePlayedCard(string color, string value) {
+		PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
+
+		GameInfo.PlayedCard = (Card)cardScn.Instantiate();
+		GameInfo.PlayedCard.CreateCard($"{color}_{value}");
+		
+		PlayedCardSpawn.AddChild(GameInfo.PlayedCard);
 	}
 }

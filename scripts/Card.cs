@@ -37,6 +37,7 @@ public partial class Card : Button {
 		};
 
 		GameInfo.Queue.Enqueue(playedCard);
+		PlayerInfo.IsYourTurn = false;
 	}
 
 	public void CreateCard(string uniqueName) {

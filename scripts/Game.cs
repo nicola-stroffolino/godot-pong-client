@@ -7,14 +7,22 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 public partial class Game : Node2D {
+	[Signal] public delegate void GameStartedEventHandler();
+	[Signal] public delegate void CardPlacedEventHandler();
 	private Label _cardColorLbl;
 	private Label _cardValueLbl;
+	private CardSpawner _cardSpawner;
+
 	public override void _Ready(){
 		GetNode<Label>("%Room").Text = PlayerInfo.ConnectedRoomName;
 		GetNode<Label>("%Opponent").Text = PlayerInfo.Opponent;
 		GetNode<Label>("%Nickname").Text = PlayerInfo.Nickname;
 		_cardColorLbl = GetNode<Label>("%CardColor");
 		_cardValueLbl = GetNode<Label>("%CardValue");
+		_cardSpawner = GetNode<CardSpawner>("%CardSpawner");
+
+		Connect(SignalName.GameStarted, new Callable(_cardSpawner, CardSpawner.MethodName.StartGame));
+		Connect(SignalName.CardPlaced, new Callable(_cardSpawner, CardSpawner.MethodName.PlacePlayedCard));
 	}
 
 	public override void _Process(double delta) {
@@ -40,6 +48,21 @@ public partial class Game : Node2D {
 			if (payload is not null) {
 				if (payload["oppNickname"] is not null) {
 					GetNode<Label>("%Opponent").Text = PlayerInfo.Opponent = (string)payload["oppNickname"];
+				} else if (payload["draw"] is not null && payload["oppDrawNumber"] is not null && payload["playedCard"] is not null) {
+					EmitSignal(
+						SignalName.GameStarted, 
+						payload["draw"].ToObject<string[]>(), 
+						(int)payload["oppDrawNumber"], 
+						(string)payload["playedCard"]
+					);
+				} else if (payload["newColor"] is not null && payload["newValue"] is not null) {
+					EmitSignal(
+						SignalName.CardPlaced,
+						(string)payload["newColor"],
+						(string)payload["newValue"]
+					);
+				} else if (payload["yourTurn"] is not null) {
+					PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
 				}
 			}
 		}
