@@ -37,7 +37,7 @@ public partial class JoinRoomMenu : CenterContainer {
 		};
 		
 		if (GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Closed) {
-			GameInfo.Ws.HandshakeHeaders = new string[] { "user-agent: Godot" };
+			GameInfo.Ws.HandshakeHeaders = new string[] { "Connection: keep-alive", "User-Agent: Godot" };
 			var err = GameInfo.Ws.ConnectToUrl(GameInfo.SocketUrl);
 			if (err != Error.Ok) {
 				GD.Print("Connection Refused");
