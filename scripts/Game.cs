@@ -9,6 +9,8 @@ using Newtonsoft.Json.Linq;
 public partial class Game : Node2D {
 	[Signal] public delegate void GameStartedEventHandler();
 	[Signal] public delegate void CardPlacedEventHandler();
+	[Signal] public delegate void OppCardsChangedEventHandler();
+	[Signal] public delegate void TurnStartedEventHandler();
 	private Label _cardColorLbl;
 	private Label _cardValueLbl;
 	private Label _turnLbl;
@@ -25,14 +27,18 @@ public partial class Game : Node2D {
 
 		Connect(SignalName.GameStarted, new Callable(_cardSpawner, CardSpawner.MethodName.StartGame));
 		Connect(SignalName.CardPlaced, new Callable(_cardSpawner, CardSpawner.MethodName.PlacePlayedCard));
+		Connect(SignalName.OppCardsChanged, new Callable(_cardSpawner, CardSpawner.MethodName.ChangeOppCardsNumber));
+		Connect(SignalName.TurnStarted, new Callable(_cardSpawner, CardSpawner.MethodName.ChangeOppCardsNumber));
 	}
 
 	public override void _Process(double delta) {
 		GameInfo.Ws.Poll();
+		
 		if (GameInfo.PlayedCard is not null) {
 			_cardColorLbl.Text = Enum.GetName(typeof(CardColor), GameInfo.PlayedCard.Color);
 			_cardValueLbl.Text = GameInfo.PlayedCard.Value;
 		}
+
 		if (PlayerInfo.IsYourTurn) _turnLbl.Text = "Its your turn!";
 		else _turnLbl.Text = "Wait for the other player's turn...";
 				
@@ -67,6 +73,9 @@ public partial class Game : Node2D {
 					);
 				} else if (payload["yourTurn"] is not null) {
 					PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
+					EmitSignal(SignalName.TurnStarted);
+				} else if (payload["oppCardsNumber"] is not null) {
+					EmitSignal(SignalName.OppCardsChanged, (int)payload["oppCardsNumber"]);
 				}
 			}
 		}

@@ -106,4 +106,33 @@ public partial class CardSpawner : Node2D {
 		
 		PlayedCardSpawn.AddChild(GameInfo.PlayedCard);
 	}
+
+	public void ChangeOppCardsNumber(int cardsNumber) {
+		foreach (var card in OppCardSpawn.GetChildren()) {
+			OppCardSpawn.RemoveChild(card);
+			card.QueueFree();
+		}
+		
+		PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
+
+		for (int i = 0; i < cardsNumber; i++) {
+			var newCard = (Card)cardScn.Instantiate();
+			newCard.CreateCard("Wild_Back");
+			
+			OppCardSpawn.AddChild(newCard);
+		}
+
+		SpreadCards(-100, 100, 100, OppCardSpawn);
+	}
+
+	public void CheckCardsAvailability() {
+		bool atLeastOneCardPlayable = false;
+		foreach (var card in CardSpawn.GetChildren().Cast<Card>()) {
+			if (card.CanBePlayed()) atLeastOneCardPlayable = true;
+		}
+
+		if (!atLeastOneCardPlayable) {
+			// Send to draw one card
+		}
+	}
 }
