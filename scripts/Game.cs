@@ -11,6 +11,7 @@ public partial class Game : Node2D {
 	[Signal] public delegate void CardPlacedEventHandler();
 	private Label _cardColorLbl;
 	private Label _cardValueLbl;
+	private Label _turnLbl;
 	private CardSpawner _cardSpawner;
 
 	public override void _Ready(){
@@ -19,6 +20,7 @@ public partial class Game : Node2D {
 		GetNode<Label>("%Nickname").Text = PlayerInfo.Nickname;
 		_cardColorLbl = GetNode<Label>("%CardColor");
 		_cardValueLbl = GetNode<Label>("%CardValue");
+		_turnLbl = GetNode<Label>("%Turn");
 		_cardSpawner = GetNode<CardSpawner>("%CardSpawner");
 
 		Connect(SignalName.GameStarted, new Callable(_cardSpawner, CardSpawner.MethodName.StartGame));
@@ -31,6 +33,8 @@ public partial class Game : Node2D {
 			_cardColorLbl.Text = Enum.GetName(typeof(CardColor), GameInfo.PlayedCard.Color);
 			_cardValueLbl.Text = GameInfo.PlayedCard.Value;
 		}
+		if (PlayerInfo.IsYourTurn) _turnLbl.Text = "Its your turn!";
+		else _turnLbl.Text = "Wait for the other player's turn...";
 				
 		if(GameInfo.Ws.GetReadyState() == WebSocketPeer.State.Open) {
 			
