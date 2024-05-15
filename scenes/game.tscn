@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://nahgnwa5bt0n"]
+[gd_scene load_steps=4 format=3 uid="uid://nahgnwa5bt0n"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_7j5dp"]
 [ext_resource type="Script" path="res://scripts/CardDealer.cs" id="2_g8i20"]
+[ext_resource type="PackedScene" uid="uid://d0rsn47x7giwo" path="res://scenes/draw_pile.tscn" id="3_cmse0"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_7j5dp")
@@ -61,9 +62,9 @@ horizontal_alignment = 2
 unique_name_in_owner = true
 script = ExtResource("2_g8i20")
 
-[node name="DrawPile" type="Marker2D" parent="CardDealer"]
+[node name="DrawPile" parent="CardDealer" instance=ExtResource("3_cmse0")]
 unique_name_in_owner = true
-position = Vector2(268, 197)
+position = Vector2(237, 197)
 
 [node name="DiscardPile" type="Marker2D" parent="CardDealer"]
 unique_name_in_owner = true

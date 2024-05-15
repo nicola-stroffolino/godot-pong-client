@@ -16,8 +16,6 @@ public partial class Card : Button {
 	public string Value { get; set; }
 	public CardColor Color { get; set; }
 
-	private Tween _tween;
-
 	public override void _Ready() {
 		Connect(SignalName.Pressed, new Callable(this, MethodName.OnCardClicked));
 	}
@@ -39,7 +37,6 @@ public partial class Card : Button {
 		};
 
 		GameInfo.Queue.Enqueue(playedCard);
-		// PlayerInfo.IsYourTurn = false;
 	}
 
 	public void CreateCard(string uniqueName) {
@@ -54,14 +51,16 @@ public partial class Card : Button {
 		var textureNode = (TextureRect)GetNode("Texture");
 		var backgroundNode = (ColorRect)GetNode("Background");
 
-		textureNode.Texture = (AtlasTexture)GD.Load("res://resources/textures/" + Value + ".tres");
+		textureNode.Texture = (AtlasTexture)GD.Load("res://resources/cards/" + Value + ".tres");
 		backgroundNode.Color = CardColors[Color];
 
 		Position = -(Size / 2);
 	}
 
 	public bool CanBePlayed() => 
-		PlayerInfo.IsYourTurn && GameInfo.PlayedCard is not null &&
+		GameInfo.PlayedCard is not null &&
+		Name != "Wild_Back" &&
+		PlayerInfo.IsYourTurn && 
 		(GameInfo.PlayedCard.Color == CardColor.Wild ||
 		Color == CardColor.Wild ||
 		Color == GameInfo.PlayedCard.Color ||

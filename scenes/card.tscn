@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cp050bve105iw"]
 
 [ext_resource type="Script" path="res://scripts/Card.cs" id="1_pweix"]
-[ext_resource type="Texture2D" uid="uid://bxw5wctkxoknj" path="res://resources/textures/Back.tres" id="2_w2amt"]
+[ext_resource type="Texture2D" uid="uid://bxw5wctkxoknj" path="res://resources/cards/Back.tres" id="2_w2amt"]
 
 [node name="Card" type="Button"]
 custom_minimum_size = Vector2(32, 48)

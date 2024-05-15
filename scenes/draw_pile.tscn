@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0rsn47x7giwo"]
+
+[ext_resource type="Script" path="res://scripts/DrawPile.cs" id="1_88gnh"]
+[ext_resource type="Texture2D" uid="uid://bxw5wctkxoknj" path="res://resources/cards/Back.tres" id="2_70ynm"]
+
+[node name="DrawPile" type="Marker2D"]
+script = ExtResource("1_88gnh")
+
+[node name="Back" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 48)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -24.0
+offset_right = 16.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(16, 24)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+flat = true
+
+[node name="Texture" type="TextureRect" parent="Back"]
+layout_mode = 1
+anchors_preset = -1
+offset_right = 32.0
+offset_bottom = 48.0
+texture = ExtResource("2_70ynm")

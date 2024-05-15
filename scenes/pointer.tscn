@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://db7nnb5380dvc"]
+
+[ext_resource type="Texture2D" uid="uid://dayigl454hbo6" path="res://resources/pointers/pointing.tres" id="1_iw5rq"]
+
+[sub_resource type="Animation" id="Animation_y6pul"]
+resource_name = "bounce"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(3, -16), Vector2(3, -30), Vector2(3, -16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ulvro"]
+_data = {
+"bounce": SubResource("Animation_y6pul")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_aomv8"]
+animation = &"bounce"
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_77bj3"]
+graph_offset = Vector2(-309, 70)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_aomv8")
+nodes/Animation/position = Vector2(100, 140)
+node_connections = [&"output", 0, &"Animation"]
+
+[node name="Pointer" type="Node2D"]
+position = Vector2(0, -16)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+"": SubResource("AnimationLibrary_ulvro")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+"": SubResource("AnimationLibrary_ulvro")
+}
+tree_root = SubResource("AnimationNodeBlendTree_77bj3")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(3, -16.014)
+rotation = 2.35619
+scale = Vector2(2, 2)
+texture = ExtResource("1_iw5rq")

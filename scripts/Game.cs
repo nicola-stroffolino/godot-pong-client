@@ -25,12 +25,6 @@ public partial class Game : Node2D {
 		_cardValueLbl = GetNode<Label>("%CardValue");
 		_turnLbl = GetNode<Label>("%Turn");
 		_cardDealer = GetNode<CardDealer>("%CardDealer");
-
-		// Connect(SignalName.GameStarted, new Callable(_cardDealer, CardSpawner.MethodName.StartGame));
-		// Connect(SignalName.CardPlaced, new Callable(_cardDealer, CardSpawner.MethodName.PlacePlayedCard));
-		// Connect(SignalName.OppCardsChanged, new Callable(_cardDealer, CardSpawner.MethodName.ChangeOppCardsNumber));
-		// Connect(SignalName.TurnStarted, new Callable(_cardDealer, CardSpawner.MethodName.CheckCardsAvailability));
-		// Connect(SignalName.CardDrawn, new Callable(_cardDealer, CardSpawner.MethodName.CheckCardsAvailability));
 	}
 
 	public override void _Process(double delta) {
@@ -39,12 +33,16 @@ public partial class Game : Node2D {
 
 
 		if (GameInfo.PlayedCard is not null) {
-			_cardColorLbl.Text = Enum.GetName(typeof(CardColor), GameInfo.PlayedCard.Color);
+			_cardColorLbl.Text = GameInfo.PlayedCard.GetColorString();
 			_cardValueLbl.Text = GameInfo.PlayedCard.Value;
 		}
 
-		if (PlayerInfo.IsYourTurn) _turnLbl.Text = "Its your turn!";
-		else _turnLbl.Text = "Wait for the other player's turn...";
+		if (PlayerInfo.Opponent is null) {
+			_turnLbl.Text = "WAITING FOR OTHER\nPLAYERS TO CONNECT...";
+		} else {
+			if (PlayerInfo.IsYourTurn) _turnLbl.Text = "Its your turn!";
+			else _turnLbl.Text = "Wait for the other\nplayer's turn...";
+		}
 			
 		/* --- Send Data --- */
 		if(GameInfo.Queue.Count != 0) {
@@ -58,7 +56,6 @@ public partial class Game : Node2D {
 		var payload = JsonConvert.DeserializeObject<JObject>(message);
 
 		if (payload is null) return;
-
 		GD.Print(payload);
 
 		switch ((string)payload["responseType"]) {
@@ -66,68 +63,51 @@ public partial class Game : Node2D {
 			{	
 				GetNode<Label>("%Opponent").Text = PlayerInfo.Opponent = (string)payload["opponentNickname"];
 
-				GameInfo.PlayedCard = (Card)Scenes.Card.Instantiate();
-				GameInfo.PlayedCard.CreateCard((string)payload["discardPile"]);
-				GameInfo.PlayedCard.Disabled = true;
-				_cardDealer.DiscardPile.AddChild(GameInfo.PlayedCard);
-
-				var drawPileCard = (Card)Scenes.Card.Instantiate();
-				drawPileCard.CreateCard("Wild_Back");
-				_cardDealer.DrawPile.AddChild(drawPileCard);
+				var discardPileCard = (Card)Scenes.Card.Instantiate();
+				discardPileCard.CreateCard((string)payload["discardPile"]);
+				_cardDealer.PlayCard(_cardDealer.DrawPile, discardPileCard);
 
 				var cards = payload["cardsDrawn"].ToObject<string[]>();
-				_cardDealer.DrawCards(_cardDealer.Hand, cards.Length, cards);
-				_cardDealer.DrawCards(_cardDealer.OpponentHand, (int)payload["opponentCardsDrawnNumber"]);
+				_cardDealer.DrawCards(_cardDealer.Hand, cards);
+
+				var oppCards = new string[(int)payload["opponentCardsDrawnNumber"]];
+				for (int i = 0; i < (int)payload["opponentCardsDrawnNumber"]; i++) oppCards[i] = "Wild_Back";
+				_cardDealer.DrawCards(_cardDealer.OpponentHand, oppCards);
 
 				break;
 			}
 			case "Card Played": {
-				if (!PlayerInfo.IsYourTurn) {
+				PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
+				
+				if (PlayerInfo.IsYourTurn) {
 					var oppPlayedCard = (Card)_cardDealer.OpponentHand.GetChild(0);
 					oppPlayedCard.CreateCard((string)payload["discardPile"]);
 					_cardDealer.PlayCard(_cardDealer.OpponentHand, oppPlayedCard);
+					_cardDealer.ArrangeCards(_cardDealer.OpponentHand);
+					
+					_cardDealer.CheckCardsAvailability();
 				}
 
-				PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
+				break;
+			}
+			case "Card Drawn": {
+				if (PlayerInfo.IsYourTurn) {
+					var drawnCards = payload["drawnCards"].ToObject<string[]>();
+					_cardDealer.DrawCards(_cardDealer.Hand, drawnCards);
+					_cardDealer.ArrangeCards(_cardDealer.Hand);
+					
+					_cardDealer.CheckCardsAvailability();
+				} else {
+					var oppCards = new string[(int)payload["opponentCardsDrawnNumber"]];
+					for (int i = 0; i < (int)payload["opponentCardsDrawnNumber"]; i++) oppCards[i] = "Wild_Back";
+					_cardDealer.DrawCards(_cardDealer.OpponentHand, oppCards);
+					_cardDealer.ArrangeCards(_cardDealer.OpponentHand);
+				}
 				
 				break;
 			}
-			case "Change Turn": {
-				break;
-			}
 			default: break;
-		}		
-
-		// else if (payload["draw"] is not null && payload["oppDrawNumber"] is not null && payload["playedCard"] is not null) {
-		// 	EmitSignal(
-		// 		SignalName.GameStarted, 
-		// 		payload["draw"].ToObject<string[]>(), 
-		// 		(int)payload["oppDrawNumber"], 
-		// 		(string)payload["playedCard"]
-		// 	);
-		// } else if (payload["newColor"] is not null && payload["newValue"] is not null) {
-		// 	EmitSignal(
-		// 		SignalName.CardPlaced,
-		// 		(string)payload["newColor"],
-		// 		(string)payload["newValue"]
-		// 	);
-		// } else if (payload["yourTurn"] is not null) {
-		// 	PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
-		// 	EmitSignal(SignalName.TurnStarted);
-		// } else if (payload["oppCardsNumber"] is not null) {
-		// 	EmitSignal(SignalName.OppCardsChanged, (int)payload["oppCardsNumber"]);
-		// } else if (payload["draw"] is not null) {
-		// 	PackedScene cardScn = GD.Load("res://scenes/card.tscn") as PackedScene;
-		// 	GD.Print(payload["draw"]);
-		// 	foreach (var drawnCard in payload["draw"].ToObject<string[]>()) {
-		// 		var newCard = (Card)cardScn.Instantiate();
-		// 		newCard.CreateCard(drawnCard);
-		// 		_cardDealer.AddCard(newCard);
-		// 	}
-			
-		// 	EmitSignal(SignalName.CardDrawn);
-		// }
-		
+		}
 	}
 
 	public override void _ExitTree() {
