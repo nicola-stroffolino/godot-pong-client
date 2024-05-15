@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 
 public partial class Card : Button {
-	[Signal] public delegate void CardClickedEventHandler(Card card, Marker2D parent);
+	[Signal] public delegate void CardClickedEventHandler(Marker2D from, Card card);
 	public Dictionary<CardColor, Color> CardColors { get; set; } = new() {
 		{ CardColor.Red, 	new Color(0xD80000FF) },
 		{ CardColor.Yellow, new Color(0xF8A000FF) },
@@ -27,7 +27,7 @@ public partial class Card : Button {
 	}
 
 	public void OnCardClicked() {
-		EmitSignal(SignalName.CardClicked, this, GetParent());
+		EmitSignal(SignalName.CardClicked, GetParent(), this);
 
 		MyDTO playedCard = new() {
 			RequestType = "Play Card",
@@ -39,7 +39,7 @@ public partial class Card : Button {
 		};
 
 		GameInfo.Queue.Enqueue(playedCard);
-		PlayerInfo.IsYourTurn = false;
+		// PlayerInfo.IsYourTurn = false;
 	}
 
 	public void CreateCard(string uniqueName) {
@@ -56,6 +56,8 @@ public partial class Card : Button {
 
 		textureNode.Texture = (AtlasTexture)GD.Load("res://resources/textures/" + Value + ".tres");
 		backgroundNode.Color = CardColors[Color];
+
+		Position = -(Size / 2);
 	}
 
 	public bool CanBePlayed() => 

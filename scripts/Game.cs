@@ -68,6 +68,7 @@ public partial class Game : Node2D {
 
 				GameInfo.PlayedCard = (Card)Scenes.Card.Instantiate();
 				GameInfo.PlayedCard.CreateCard((string)payload["discardPile"]);
+				GameInfo.PlayedCard.Disabled = true;
 				_cardDealer.DiscardPile.AddChild(GameInfo.PlayedCard);
 
 				var drawPileCard = (Card)Scenes.Card.Instantiate();
@@ -78,6 +79,20 @@ public partial class Game : Node2D {
 				_cardDealer.DrawCards(_cardDealer.Hand, cards.Length, cards);
 				_cardDealer.DrawCards(_cardDealer.OpponentHand, (int)payload["opponentCardsDrawnNumber"]);
 
+				break;
+			}
+			case "Card Played": {
+				if (!PlayerInfo.IsYourTurn) {
+					var oppPlayedCard = (Card)_cardDealer.OpponentHand.GetChild(0);
+					oppPlayedCard.CreateCard((string)payload["discardPile"]);
+					_cardDealer.PlayCard(_cardDealer.OpponentHand, oppPlayedCard);
+				}
+
+				PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
+				
+				break;
+			}
+			case "Change Turn": {
 				break;
 			}
 			default: break;

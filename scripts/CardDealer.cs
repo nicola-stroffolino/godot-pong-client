@@ -44,12 +44,12 @@ public partial class CardDealer : Node2D {
 			var newCard = (Card)Scenes.Card.Instantiate();
 			if (cards is null) newCard.CreateCard("Wild_Back");
 			else newCard.CreateCard(cards[i]);
-			
+
+			newCard.Connect(Card.SignalName.CardClicked, new Callable(this, MethodName.PlayCard));	
 			owner.AddChild(newCard);
 			newCard.GlobalPosition = DrawPile.GlobalPosition;
 
 			Vector2 finalPos = -(newCard.Size / 2) - new Vector2((float)(cardOffsetX * (number - 1 - i)), k * Mathf.Sqrt(100 - pos * pos) - offset );
-			GD.Print(step);
 			finalPos.X += cardOffsetX * (number - 1) / 2;
 
 			var rotRadians = Mathf.LerpAngle(-rotMax, rotMax, (double)i / (number - 1));
@@ -131,4 +131,35 @@ public partial class CardDealer : Node2D {
 	public void AddCard(Card card) {
 		Hand.AddChild(card);
 	}
+
+	public void PlayCard(Marker2D from, Card card) {
+		Tween _tween = null;
+		
+		if (_tween is not null && _tween.IsRunning()) _tween.Kill();
+		_tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+
+		card.Disabled = true;
+		card.Reparent(DiscardPile);
+		card.GlobalPosition = from.GlobalPosition - (card.Size / 2);
+
+		var finalPos = DiscardPile.GlobalPosition - (card.Size / 2);
+
+		_tween.Parallel().TweenProperty(card, "global_position", finalPos, 0.3);
+	}
+
+	// public void PlayCard(Marker2D from, string card) {
+	// 	Tween _tween = null;
+		
+	// 	if (_tween is not null && _tween.IsRunning()) _tween.Kill();
+	// 	_tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+
+	// 	var newCard = (Card)Scenes.Card.Instantiate();
+	// 	newCard.CreateCard(card);
+	// 	DiscardPile.AddChild(newCard);
+	// 	newCard.GlobalPosition = from.GlobalPosition - (newCard.Size / 2);
+
+	// 	var finalPos = DiscardPile.GlobalPosition - (newCard.Size / 2);
+
+	// 	_tween.Parallel().TweenProperty(newCard, "global_position", finalPos, 0.3);
+	// }
 }
