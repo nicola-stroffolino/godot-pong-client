@@ -12,7 +12,11 @@ public partial class StartMenu : CenterContainer {
 		_joinMenuBtn.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.SwitchToJoinMenu));
 	}
 
-	public void SwitchToCreateMenu() {
+    public override void _Process(double delta) {
+        GameInfo.Ws.Poll();
+    }
+
+    public void SwitchToCreateMenu() {
 		GetTree().ChangeSceneToPacked(Scenes.CreateMenu);
 	}
 

@@ -16,6 +16,7 @@ public partial class Game : Node2D {
 	private Label _cardValueLbl;
 	private Label _turnLbl;
 	private CardDealer _cardDealer;
+	private Node _endScreenContainer;
 
 	public override void _Ready(){
 		GetNode<Label>("%Room").Text = PlayerInfo.ConnectedRoomName;
@@ -25,6 +26,7 @@ public partial class Game : Node2D {
 		_cardValueLbl = GetNode<Label>("%CardValue");
 		_turnLbl = GetNode<Label>("%Turn");
 		_cardDealer = GetNode<CardDealer>("%CardDealer");
+		_endScreenContainer = GetNode<Node>("%EndScreenContainer");
 	}
 
 	public override void _Process(double delta) {
@@ -74,6 +76,8 @@ public partial class Game : Node2D {
 				for (int i = 0; i < (int)payload["opponentCardsDrawnNumber"]; i++) oppCards[i] = "Wild_Back";
 				_cardDealer.DrawCards(_cardDealer.OpponentHand, oppCards);
 
+				if (PlayerInfo.IsYourTurn) _cardDealer.CheckCardsAvailability();
+
 				break;
 			}
 			case "Card Played": {
@@ -104,6 +108,15 @@ public partial class Game : Node2D {
 					_cardDealer.ArrangeCards(_cardDealer.OpponentHand);
 				}
 				
+				break;
+			}
+			case "Game Ended": {
+				var youWon = (bool)payload["winner"];
+
+				var endScreen = (EndScreen)Scenes.EndScreen.Instantiate();
+				_endScreenContainer.AddChild(endScreen);
+				endScreen.SetOutcome(youWon);
+
 				break;
 			}
 			default: break;

@@ -64,16 +64,19 @@ script = ExtResource("2_g8i20")
 
 [node name="DrawPile" parent="CardDealer" instance=ExtResource("3_cmse0")]
 unique_name_in_owner = true
-position = Vector2(237, 197)
+position = Vector2(230, 180)
 
 [node name="DiscardPile" type="Marker2D" parent="CardDealer"]
 unique_name_in_owner = true
-position = Vector2(330, 197)
+position = Vector2(320, 180)
 
 [node name="Hand" type="Marker2D" parent="CardDealer"]
 unique_name_in_owner = true
-position = Vector2(330, 326)
+position = Vector2(320, 326)
 
 [node name="OpponentHand" type="Marker2D" parent="CardDealer"]
 unique_name_in_owner = true
-position = Vector2(330, 33)
+position = Vector2(320, 34)
+
+[node name="EndScreenContainer" type="Node" parent="."]
+unique_name_in_owner = true
