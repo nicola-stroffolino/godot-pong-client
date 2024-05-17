@@ -32,6 +32,10 @@ window/stretch/aspect="keep_height"
 
 project/assembly_name="Pong_Multiplayer"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/advanced_radial_menu/plugin.cfg")
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

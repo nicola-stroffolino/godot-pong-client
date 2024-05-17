@@ -11,16 +11,14 @@ public partial class CardDealer : Node2D {
 	public Marker2D DiscardPile { get; set; }
 	public Marker2D Hand { get; set; }
 	public Marker2D OpponentHand { get; set; }
+	private Node _screensContainer;
 
 	public override void _Ready() {
 		DrawPile = (DrawPile)GetNode("%DrawPile");
 		DiscardPile = (Marker2D)GetNode("%DiscardPile");
 		Hand = (Marker2D)GetNode("%Hand");
 		OpponentHand = (Marker2D)GetNode("%OpponentHand");
-	}
-
-	public override void _Process(double delta) {
-
+		_screensContainer = GetNode<Node>("%ScreensContainer");
 	}
 
 	private void ManageCards(Marker2D owner, string[] cards = null, bool createNew = false) {
@@ -28,10 +26,6 @@ public partial class CardDealer : Node2D {
 		float cardOffsetX = 16f;
 		float rotMax = Mathf.Pi / 10;
 		
-		Tween _tween = null;
-		if (_tween is not null && _tween.IsRunning()) _tween.Kill();
-		_tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
-
 		float step = 20f / (cardCount + 1);
 		if (cardCount == 1) step = 0;
 
@@ -40,6 +34,7 @@ public partial class CardDealer : Node2D {
 		float offset = k * Mathf.Sqrt(100 - (step - 10) * (step - 10));
 
 		for (int i = 0; i < cardCount; i++, pos += step) {
+			Tween tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
 			Card card;
 
 			if (createNew) {
@@ -57,8 +52,8 @@ public partial class CardDealer : Node2D {
 
 			var rotRadians = cardCount > 1 ? Mathf.LerpAngle(-rotMax, rotMax, (double)i / (cardCount - 1)) : 0;
 
-			_tween.Parallel().TweenProperty(card, "position", finalPos, 0.3 + (i * 0.075));
-			_tween.Parallel().TweenProperty(card, "rotation", rotRadians, 0.3 + (i * 0.075));
+			tween.Parallel().TweenProperty(card, "position", finalPos, 0.3 + (i * 0.075));
+			tween.Parallel().TweenProperty(card, "rotation", rotRadians, 0.3 + (i * 0.075));
 		}
 	}
 
@@ -82,21 +77,23 @@ public partial class CardDealer : Node2D {
 	}
 
 	public void PlayCard(Marker2D from, Card card) {
-		Tween _tween = null;
-		
-		if (_tween is not null && _tween.IsRunning()) _tween.Kill();
-		_tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+		if (card.Color == CardColor.Wild && PlayerInfo.IsYourTurn) {
+			var wildMenu = (WildMenu)Scenes.WildMenu.Instantiate();
+			_screensContainer.AddChild(wildMenu);
+			wildMenu.Connect(WildMenu.SignalName.ColorChoosen, new Callable(card, Card.MethodName.SetColorAndPlay));
+		}
 
-		card.SetProcess(false);
-		card.Disabled = true;
+		Tween tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+
 		if (card.GetParent() is null) DiscardPile.AddChild(card);
 		else card.Reparent(DiscardPile);
+		card.ObliterateFromTheFaceOfTheEarth();
 		GameInfo.PlayedCard = card;
 
 		card.GlobalPosition = from.GlobalPosition - (card.Size / 2);
 		var finalPos = DiscardPile.GlobalPosition - (card.Size / 2);
 
-		_tween.Parallel().TweenProperty(card, "global_position", finalPos, 0.3);
+		tween.TweenProperty(card, "global_position", finalPos, 0.3);
 		ArrangeCards(Hand);
 	}
 }

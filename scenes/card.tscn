@@ -1,7 +1,39 @@
-[gd_scene load_steps=3 format=3 uid="uid://cp050bve105iw"]
+[gd_scene load_steps=6 format=3 uid="uid://cp050bve105iw"]
 
+[ext_resource type="Texture2D" uid="uid://dxc4lvtmknbly" path="res://resources/pointers/marker.tres" id="1_kqwdl"]
 [ext_resource type="Script" path="res://scripts/Card.cs" id="1_pweix"]
 [ext_resource type="Texture2D" uid="uid://bxw5wctkxoknj" path="res://resources/cards/Back.tres" id="2_w2amt"]
+
+[sub_resource type="Animation" id="Animation_l55pg"]
+resource_name = "bounce"
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Texture/Marker:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(8, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Texture/Marker:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(-12, -0.25, 0, 0.25, 0, -17, -0.25, 0, 0.25, 0, -12, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_os7bv"]
+_data = {
+"bounce": SubResource("Animation_l55pg")
+}
 
 [node name="Card" type="Button"]
 custom_minimum_size = Vector2(32, 48)
@@ -25,3 +57,22 @@ anchors_preset = -1
 offset_right = 32.0
 offset_bottom = 48.0
 texture = ExtResource("2_w2amt")
+
+[node name="Marker" type="TextureRect" parent="Texture"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -8.0
+offset_top = -14.4006
+offset_right = 8.0
+offset_bottom = 1.59943
+grow_horizontal = 2
+texture = ExtResource("1_kqwdl")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_os7bv")
+}

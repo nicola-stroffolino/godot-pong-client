@@ -1,7 +1,8 @@
 [gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://d4m21urn18tm5"]
 
-[ext_resource type="Texture2D" uid="uid://w0lk6h3su18l" path="res://assets/cards_layout.png" id="1_iccqo"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_oh6we"]
+load_path = "res://.godot/imported/cards_layout.png-57abeed5aa4a181ddc9c2106c9777fad.ctex"
 
 [resource]
-atlas = ExtResource("1_iccqo")
+atlas = SubResource("CompressedTexture2D_oh6we")
 region = Rect2(204, 50, 32, 48)

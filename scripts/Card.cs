@@ -15,28 +15,39 @@ public partial class Card : Button {
 	public new string Name { get; set; }
 	public string Value { get; set; }
 	public CardColor Color { get; set; }
+	private TextureRect _marker;
+	private AnimationPlayer _animPlayer;
 
 	public override void _Ready() {
-		Connect(SignalName.Pressed, new Callable(this, MethodName.OnCardClicked));
+		_marker = GetNode<TextureRect>("%Marker");
+		_animPlayer = GetNode<AnimationPlayer>("%AnimationPlayer");
+		Connect(SignalName.Pressed, Callable.From(OnCardClicked));
+		Connect(SignalName.MouseEntered, Callable.From(OnMouseEntered));
+		Connect(SignalName.MouseExited, Callable.From(OnMouseExited));
+
+		_animPlayer.Play("bounce");
 	}
 
-	public override void _Process(double delta) {
+    public override void _Process(double delta) {
 		Disabled = !CanBePlayed();
-	}
+		_marker.Visible = CanBePlayed();
+    }
 
-	public void OnCardClicked() {
+    public void OnCardClicked() {
 		EmitSignal(SignalName.CardClicked, GetParent(), this);
+		
+		if (Color != CardColor.Wild) {
+			MyDTO playedCard = new() {
+				RequestType = "Play Card",
+				Data = new {
+					Name = Name,
+					Color = GetColorString(),
+					Value = Value
+				}
+			};
 
-		MyDTO playedCard = new() {
-			RequestType = "Play Card",
-			Data = new {
-				Name = Name,
-				Color = GetColorString(),
-				Value = Value
-			}
-		};
-
-		GameInfo.Queue.Enqueue(playedCard);
+			GameInfo.Queue.Enqueue(playedCard);
+		}
 	}
 
 	public void CreateCard(string uniqueName) {
@@ -66,7 +77,36 @@ public partial class Card : Button {
 		Color == GameInfo.PlayedCard.Color ||
 		Value == GameInfo.PlayedCard.Value);
 
+	public void SetColorAndPlay(CardColor color) {
+		Color = color;
+		OnCardClicked();
+	}
+
 	public string GetColorString() => Enum.GetName(typeof(CardColor), Color);
+
+	public void ObliterateFromTheFaceOfTheEarth() {
+		Disconnect(SignalName.MouseEntered, Callable.From(OnMouseEntered));
+		Disconnect(SignalName.MouseExited, Callable.From(OnMouseExited));
+		SetProcess(false);
+		Disabled = true;
+		_animPlayer.Stop();
+		_marker.Visible = false;
+	}
+
+	public void OnMouseEntered() {
+		Tween tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+		tween.Parallel().TweenProperty(this, "scale", new Vector2(1.2f, 1.2f), 0.1);
+
+		ZIndex = 1;
+	}
+
+	public void OnMouseExited() {
+		Tween tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+		tween.Parallel().TweenProperty(this, "scale", new Vector2(1f, 1f), 0.3);
+
+		ZIndex = 0;
+	}
+
 }
 
 public enum CardColor {

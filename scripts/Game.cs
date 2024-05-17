@@ -16,7 +16,7 @@ public partial class Game : Node2D {
 	private Label _cardValueLbl;
 	private Label _turnLbl;
 	private CardDealer _cardDealer;
-	private Node _endScreenContainer;
+	private Node _screensContainer;
 
 	public override void _Ready(){
 		GetNode<Label>("%Room").Text = PlayerInfo.ConnectedRoomName;
@@ -26,13 +26,12 @@ public partial class Game : Node2D {
 		_cardValueLbl = GetNode<Label>("%CardValue");
 		_turnLbl = GetNode<Label>("%Turn");
 		_cardDealer = GetNode<CardDealer>("%CardDealer");
-		_endScreenContainer = GetNode<Node>("%EndScreenContainer");
+		_screensContainer = GetNode<Node>("%ScreensContainer");
 	}
 
 	public override void _Process(double delta) {
 		GameInfo.Ws.Poll();
 		if (GameInfo.Ws.GetReadyState() != WebSocketPeer.State.Open) return;
-
 
 		if (GameInfo.PlayedCard is not null) {
 			_cardColorLbl.Text = GameInfo.PlayedCard.GetColorString();
@@ -114,7 +113,7 @@ public partial class Game : Node2D {
 				var youWon = (bool)payload["winner"];
 
 				var endScreen = (EndScreen)Scenes.EndScreen.Instantiate();
-				_endScreenContainer.AddChild(endScreen);
+				_screensContainer.AddChild(endScreen);
 				endScreen.SetOutcome(youWon);
 
 				break;

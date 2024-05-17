@@ -17,9 +17,9 @@ text = "Room:"
 [node name="Turn" type="Label" parent="."]
 unique_name_in_owner = true
 offset_left = 10.0
-offset_top = 174.0
+offset_top = 168.0
 offset_right = 92.0
-offset_bottom = 197.0
+offset_bottom = 192.0
 
 [node name="CardColor" type="Label" parent="."]
 unique_name_in_owner = true
@@ -78,5 +78,5 @@ position = Vector2(320, 326)
 unique_name_in_owner = true
 position = Vector2(320, 34)
 
-[node name="EndScreenContainer" type="Node" parent="."]
+[node name="ScreensContainer" type="Node" parent="."]
 unique_name_in_owner = true

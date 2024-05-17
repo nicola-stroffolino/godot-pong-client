@@ -1,0 +1,105 @@
+[gd_scene load_steps=8 format=3 uid="uid://bpa1o06vvi58c"]
+
+[ext_resource type="Script" path="res://scripts/WildMenu.cs" id="1_ilq46"]
+[ext_resource type="Texture2D" uid="uid://cdltbttiyatv0" path="res://assets/wild_menu_background.png" id="2_00wmm"]
+[ext_resource type="Texture2D" uid="uid://dke7jmfiijtbv" path="res://resources/menus/wild_menu_red.tres" id="3_rqnal"]
+[ext_resource type="Texture2D" uid="uid://fmknwyw5du14" path="res://resources/menus/wild_menu_blue.tres" id="4_7x161"]
+[ext_resource type="Script" path="res://scripts/WildMenuButton.cs" id="4_qecry"]
+[ext_resource type="Texture2D" uid="uid://daog4iqchid51" path="res://resources/menus/wild_menu_green.tres" id="5_l76k5"]
+[ext_resource type="Texture2D" uid="uid://c64aixxdfydck" path="res://resources/menus/wild_menu_yellow.tres" id="6_x8xwa"]
+
+[node name="WildMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ilq46")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_00wmm")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.639216)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 34.0
+offset_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_00wmm")
+
+[node name="Red" type="TextureButton" parent="."]
+layout_mode = 2
+offset_left = 292.0
+offset_top = 152.0
+offset_right = 318.0
+offset_bottom = 178.0
+texture_normal = ExtResource("3_rqnal")
+texture_pressed = ExtResource("3_rqnal")
+texture_hover = ExtResource("3_rqnal")
+texture_disabled = ExtResource("3_rqnal")
+texture_focused = ExtResource("3_rqnal")
+stretch_mode = 4
+script = ExtResource("4_qecry")
+
+[node name="Blue" type="TextureButton" parent="."]
+layout_mode = 2
+offset_left = 322.0
+offset_top = 152.0
+offset_right = 348.0
+offset_bottom = 178.0
+texture_normal = ExtResource("4_7x161")
+texture_pressed = ExtResource("4_7x161")
+texture_hover = ExtResource("4_7x161")
+texture_disabled = ExtResource("4_7x161")
+texture_focused = ExtResource("4_7x161")
+script = ExtResource("4_qecry")
+Value = 3
+
+[node name="Green" type="TextureButton" parent="."]
+layout_mode = 2
+offset_left = 292.0
+offset_top = 182.0
+offset_right = 318.0
+offset_bottom = 208.0
+texture_normal = ExtResource("5_l76k5")
+texture_pressed = ExtResource("5_l76k5")
+texture_hover = ExtResource("5_l76k5")
+texture_disabled = ExtResource("5_l76k5")
+texture_focused = ExtResource("5_l76k5")
+script = ExtResource("4_qecry")
+Value = 2
+
+[node name="Yellow" type="TextureButton" parent="."]
+layout_mode = 2
+offset_left = 322.0
+offset_top = 182.0
+offset_right = 348.0
+offset_bottom = 208.0
+texture_normal = ExtResource("6_x8xwa")
+texture_pressed = ExtResource("6_x8xwa")
+texture_hover = ExtResource("6_x8xwa")
+texture_disabled = ExtResource("6_x8xwa")
+texture_focused = ExtResource("6_x8xwa")
+script = ExtResource("4_qecry")
+Value = 1
