@@ -67,8 +67,6 @@ public partial class Card : Button {
 
 		textureNode.Texture = (AtlasTexture)GD.Load("res://resources/cards/" + Value + ".tres");
 		backgroundNode.Color = CardColors[Color];
-
-		Position = -(Size / 2);
 	}
 
 	public void CreateCard(CardColor color, string value) {
@@ -81,8 +79,6 @@ public partial class Card : Button {
 
 		textureNode.Texture = (AtlasTexture)GD.Load("res://resources/cards/" + Value + ".tres");
 		backgroundNode.Color = CardColors[Color];
-
-		Position = -(Size / 2);
 	}
 
 	public bool CanBePlayed() => 

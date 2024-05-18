@@ -37,8 +37,10 @@ _data = {
 
 [node name="Card" type="Button"]
 custom_minimum_size = Vector2(32, 48)
-offset_right = 32.0
-offset_bottom = 48.0
+offset_left = -16.0
+offset_top = -24.0
+offset_right = 16.0
+offset_bottom = 24.0
 pivot_offset = Vector2(16, 24)
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -65,9 +67,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -8.0
-offset_top = -14.4006
+offset_top = -12.0
 offset_right = 8.0
-offset_bottom = 1.59943
+offset_bottom = 4.00003
 grow_horizontal = 2
 texture = ExtResource("1_kqwdl")
 

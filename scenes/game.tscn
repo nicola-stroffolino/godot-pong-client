@@ -24,16 +24,16 @@ offset_bottom = 192.0
 [node name="CardColor" type="Label" parent="."]
 unique_name_in_owner = true
 offset_left = 356.0
-offset_top = 197.0
+offset_top = 180.0
 offset_right = 406.0
-offset_bottom = 220.0
+offset_bottom = 203.0
 
 [node name="CardValue" type="Label" parent="."]
 unique_name_in_owner = true
 offset_left = 356.0
-offset_top = 174.0
+offset_top = 157.0
 offset_right = 406.0
-offset_bottom = 197.0
+offset_bottom = 180.0
 
 [node name="Room" type="Label" parent="."]
 unique_name_in_owner = true
@@ -64,7 +64,7 @@ script = ExtResource("2_g8i20")
 
 [node name="DrawPile" parent="CardDealer" instance=ExtResource("3_cmse0")]
 unique_name_in_owner = true
-position = Vector2(230, 180)
+position = Vector2(231, 180)
 
 [node name="DiscardPile" type="Marker2D" parent="CardDealer"]
 unique_name_in_owner = true

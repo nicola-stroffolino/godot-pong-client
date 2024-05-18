@@ -62,6 +62,7 @@ public partial class CardDealer : Node2D {
 
 	public void DrawCards(Marker2D owner, string[] cards) {
 		ManageCards(owner, cards, true);
+		DrawPile.UpdateCardsNumber();
 	}
 
 	public void ArrangeCards(Marker2D owner) {
@@ -69,14 +70,11 @@ public partial class CardDealer : Node2D {
 	}
 
 	public void CheckCardsAvailability() {
-		bool atLeastOneCardPlayable = false;
 		foreach (var card in Hand.GetChildren().Cast<Card>()) {
-			if (card.CanBePlayed()) atLeastOneCardPlayable = true;
+			if (card.CanBePlayed()) return;
 		}
 
-		if (!atLeastOneCardPlayable) {
-			DrawPile.UnlockDrawFeature();
-		}
+		if (GameInfo.DeckCardsNumber != 0) DrawPile.UnlockDrawFeature();		
 	}
 
 	public void PlayCard(Marker2D from, Card card) {

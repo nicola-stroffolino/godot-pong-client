@@ -16,6 +16,7 @@ public partial class Game : Node2D {
 	private Label _cardValueLbl;
 	private Label _turnLbl;
 	private CardDealer _cardDealer;
+	private DrawPile _drawPile;
 	private Node _screensContainer;
 
 	public override void _Ready(){
@@ -26,6 +27,7 @@ public partial class Game : Node2D {
 		_cardValueLbl = GetNode<Label>("%CardValue");
 		_turnLbl = GetNode<Label>("%Turn");
 		_cardDealer = GetNode<CardDealer>("%CardDealer");
+		_drawPile = GetNode<DrawPile>("%DrawPile");
 		_screensContainer = GetNode<Node>("%ScreensContainer");
 	}
 
@@ -57,12 +59,15 @@ public partial class Game : Node2D {
 		var payload = JsonConvert.DeserializeObject<JObject>(message);
 
 		if (payload is null) return;
-		GD.Print(payload);
+		// GD.Print(payload);
 
 		switch ((string)payload["responseType"]) {
 			case "Game Started": 
 			{	
 				GetNode<Label>("%Opponent").Text = PlayerInfo.Opponent = (string)payload["opponentNickname"];
+
+				GameInfo.DeckCardsNumber = (int)payload["deckCardsNumber"];
+				_drawPile.UpdateCardsNumber();
 
 				var discardPileCard = (Card)Scenes.Card.Instantiate();
 				discardPileCard.CreateCard((string)payload["discardPile"]);
@@ -80,6 +85,7 @@ public partial class Game : Node2D {
 				break;
 			}
 			case "Card Played": {
+				GD.Print(payload);
 				PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
 				
 				if (PlayerInfo.IsYourTurn) {
@@ -94,6 +100,7 @@ public partial class Game : Node2D {
 				break;
 			}
 			case "Card Drawn": {
+				GD.Print(payload);
 				if (PlayerInfo.IsYourTurn) {
 					var drawnCards = payload["drawnCards"].ToObject<string[]>();
 					_cardDealer.DrawCards(_cardDealer.Hand, drawnCards);
@@ -102,10 +109,14 @@ public partial class Game : Node2D {
 					_cardDealer.CheckCardsAvailability();
 				} else {
 					var oppCards = new string[(int)payload["opponentCardsDrawnNumber"]];
-					for (int i = 0; i < (int)payload["opponentCardsDrawnNumber"]; i++) oppCards[i] = "Wild_Back";
+					for (int i = 0; i < (int)payload["opponentCardsDrawnNumber"]; i++) {
+						oppCards[i] = "Wild_Back";
+					}
 					_cardDealer.DrawCards(_cardDealer.OpponentHand, oppCards);
 					_cardDealer.ArrangeCards(_cardDealer.OpponentHand);
 				}
+
+				GameInfo.DeckCardsNumber = (int)payload["deckCardsNumber"];
 				
 				break;
 			}
