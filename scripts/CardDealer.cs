@@ -40,7 +40,10 @@ public partial class CardDealer : Node2D {
 			if (createNew) {
 				card = (Card)Scenes.Card.Instantiate();
 				card.CreateCard(cards[i]);
-				card.Connect(Card.SignalName.CardClicked, new Callable(this, MethodName.PlayCard));
+				
+				card.Connect(Card.SignalName.ColorCardClicked, new Callable(this, MethodName.PlayCard));
+				card.Connect(Card.SignalName.WildCardClicked, new Callable(this, MethodName.HandleWildCard));
+
 				owner.AddChild(card);
 				card.GlobalPosition = DrawPile.GlobalPosition;
 			} else {
@@ -77,12 +80,6 @@ public partial class CardDealer : Node2D {
 	}
 
 	public void PlayCard(Marker2D from, Card card) {
-		if (card.Color == CardColor.Wild && PlayerInfo.IsYourTurn) {
-			var wildMenu = (WildMenu)Scenes.WildMenu.Instantiate();
-			_screensContainer.AddChild(wildMenu);
-			wildMenu.Connect(WildMenu.SignalName.ColorChoosen, new Callable(card, Card.MethodName.SetColorAndPlay));
-		}
-
 		Tween tween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
 
 		if (card.GetParent() is null) DiscardPile.AddChild(card);
@@ -95,5 +92,14 @@ public partial class CardDealer : Node2D {
 
 		tween.TweenProperty(card, "global_position", finalPos, 0.3);
 		ArrangeCards(Hand);
+	}
+
+	public void HandleWildCard(Card card) {
+		if (!PlayerInfo.IsYourTurn) return;
+
+		var wildMenu = (WildMenu)Scenes.WildMenu.Instantiate();
+		_screensContainer.AddChild(wildMenu);
+
+		wildMenu.Connect(WildMenu.SignalName.ColorChoosen, new Callable(card, Card.MethodName.HandleWildCard));
 	}
 }

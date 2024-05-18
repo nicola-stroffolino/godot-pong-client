@@ -4,7 +4,8 @@ using Newtonsoft.Json.Linq;
 using System;
 
 public partial class Card : Button {
-	[Signal] public delegate void CardClickedEventHandler(Marker2D from, Card card);
+	[Signal] public delegate void WildCardClickedEventHandler(Marker2D from, Card card);
+	[Signal] public delegate void ColorCardClickedEventHandler(Marker2D from, Card card);
 	public Dictionary<CardColor, Color> CardColors { get; set; } = new() {
 		{ CardColor.Red, 	new Color(0xD80000FF) },
 		{ CardColor.Yellow, new Color(0xF8A000FF) },
@@ -34,9 +35,11 @@ public partial class Card : Button {
     }
 
     public void OnCardClicked() {
-		EmitSignal(SignalName.CardClicked, GetParent(), this);
-		
-		if (Color != CardColor.Wild) {
+		if (Color == CardColor.Wild) {
+			EmitSignal(SignalName.WildCardClicked, this);
+		} else {
+			EmitSignal(SignalName.ColorCardClicked, GetParent(), this);
+			
 			MyDTO playedCard = new() {
 				RequestType = "Play Card",
 				Data = new {
@@ -68,6 +71,20 @@ public partial class Card : Button {
 		Position = -(Size / 2);
 	}
 
+	public void CreateCard(CardColor color, string value) {
+		Color = color;
+		Value = value;
+		Name = GetColorString() + '_' + value;
+
+		var textureNode = (TextureRect)GetNode("Texture");
+		var backgroundNode = (ColorRect)GetNode("Background");
+
+		textureNode.Texture = (AtlasTexture)GD.Load("res://resources/cards/" + Value + ".tres");
+		backgroundNode.Color = CardColors[Color];
+
+		Position = -(Size / 2);
+	}
+
 	public bool CanBePlayed() => 
 		GameInfo.PlayedCard is not null &&
 		Name != "Wild_Back" &&
@@ -77,8 +94,11 @@ public partial class Card : Button {
 		Color == GameInfo.PlayedCard.Color ||
 		Value == GameInfo.PlayedCard.Value);
 
-	public void SetColorAndPlay(CardColor color) {
+	public void HandleWildCard(CardColor color) {
 		Color = color;
+		if (Value.StartsWith("Wild")) Value = Value[4..];
+		CreateCard(Color, Value);
+		
 		OnCardClicked();
 	}
 

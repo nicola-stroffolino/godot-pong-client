@@ -1,7 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://daog4iqchid51"]
-
-[ext_resource type="Texture2D" uid="uid://d10yik7du517e" path="res://assets/wild_menu_buttons.png" id="1_s713f"]
-
-[resource]
-atlas = ExtResource("1_s713f")
-region = Rect2(4, 34, 26, 26)

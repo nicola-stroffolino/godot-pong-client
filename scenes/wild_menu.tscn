@@ -1,12 +1,88 @@
-[gd_scene load_steps=8 format=3 uid="uid://bpa1o06vvi58c"]
+[gd_scene load_steps=20 format=3 uid="uid://bpa1o06vvi58c"]
 
 [ext_resource type="Script" path="res://scripts/WildMenu.cs" id="1_ilq46"]
 [ext_resource type="Texture2D" uid="uid://cdltbttiyatv0" path="res://assets/wild_menu_background.png" id="2_00wmm"]
-[ext_resource type="Texture2D" uid="uid://dke7jmfiijtbv" path="res://resources/menus/wild_menu_red.tres" id="3_rqnal"]
-[ext_resource type="Texture2D" uid="uid://fmknwyw5du14" path="res://resources/menus/wild_menu_blue.tres" id="4_7x161"]
+[ext_resource type="Texture2D" uid="uid://c4b58rxmcqwgm" path="res://resources/menus/wild_menu_buttons.tres" id="3_aixew"]
 [ext_resource type="Script" path="res://scripts/WildMenuButton.cs" id="4_qecry"]
-[ext_resource type="Texture2D" uid="uid://daog4iqchid51" path="res://resources/menus/wild_menu_green.tres" id="5_l76k5"]
-[ext_resource type="Texture2D" uid="uid://c64aixxdfydck" path="res://resources/menus/wild_menu_yellow.tres" id="6_x8xwa"]
+[ext_resource type="Texture2D" uid="uid://d10yik7du517e" path="res://assets/wild_menu_buttons.png" id="5_brx7i"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gch3h"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(63, 3, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t8yrv"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(123, 3, 28, 28)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ncsus"]
+load_path = "res://.godot/imported/wild_menu_buttons.png-1de5eb9c6f9a5daddd0363f82eb0001b.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_864ki"]
+atlas = SubResource("CompressedTexture2D_ncsus")
+region = Rect2(33, 3, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_76yfv"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(93, 3, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dvdj7"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(153, 3, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gberv"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(3, 33, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k5hik"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(63, 33, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_blndc"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(123, 33, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o1fp4"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(33, 33, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_otppx"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(93, 33, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c4vre"]
+atlas = ExtResource("5_brx7i")
+region = Rect2(153, 33, 28, 28)
+
+[sub_resource type="Animation" id="Animation_4642q"]
+resource_name = "spawn"
+length = 0.4
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Control:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(-360, -0.25, 0, 0.25, 0, 0, -0.4, 71.5, 0.25, 0),
+"times": PackedFloat32Array(0, 0.4)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8rv5r"]
+_data = {
+"spawn": SubResource("Animation_4642q")
+}
 
 [node name="WildMenu" type="Control"]
 layout_mode = 3
@@ -17,22 +93,62 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ilq46")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Control"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -43.0
+offset_right = 100.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="Control/Panel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -32.0
-offset_right = 32.0
-offset_bottom = 32.0
+offset_left = -89.0
+offset_top = -17.0
+offset_right = 89.0
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "Choose a color!"
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_00wmm")
+stretch_mode = 5
 
-[node name="TextureRect2" type="TextureRect" parent="."]
+[node name="TextureRect2" type="TextureRect" parent="Control"]
 modulate = Color(1, 1, 1, 0.639216)
 layout_mode = 1
 anchors_preset = 8
@@ -40,66 +156,81 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -30.0
-offset_top = -30.0
-offset_right = 34.0
-offset_bottom = 34.0
+offset_left = -120.0
+offset_top = -120.0
+offset_right = 136.0
+offset_bottom = 136.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_00wmm")
+stretch_mode = 5
 
-[node name="Red" type="TextureButton" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-offset_left = 292.0
-offset_top = 152.0
-offset_right = 318.0
-offset_bottom = 178.0
-texture_normal = ExtResource("3_rqnal")
-texture_pressed = ExtResource("3_rqnal")
-texture_hover = ExtResource("3_rqnal")
-texture_disabled = ExtResource("3_rqnal")
-texture_focused = ExtResource("3_rqnal")
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="Red" type="TextureButton" parent="Control/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(108, 108)
+layout_mode = 2
+texture_normal = ExtResource("3_aixew")
+texture_pressed = SubResource("AtlasTexture_gch3h")
+texture_hover = SubResource("AtlasTexture_t8yrv")
 stretch_mode = 4
 script = ExtResource("4_qecry")
 
-[node name="Blue" type="TextureButton" parent="."]
+[node name="Blue" type="TextureButton" parent="Control/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
-offset_left = 322.0
-offset_top = 152.0
-offset_right = 348.0
-offset_bottom = 178.0
-texture_normal = ExtResource("4_7x161")
-texture_pressed = ExtResource("4_7x161")
-texture_hover = ExtResource("4_7x161")
-texture_disabled = ExtResource("4_7x161")
-texture_focused = ExtResource("4_7x161")
+texture_normal = SubResource("AtlasTexture_864ki")
+texture_pressed = SubResource("AtlasTexture_76yfv")
+texture_hover = SubResource("AtlasTexture_dvdj7")
+stretch_mode = 5
 script = ExtResource("4_qecry")
 Value = 3
 
-[node name="Green" type="TextureButton" parent="."]
+[node name="Green" type="TextureButton" parent="Control/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
-offset_left = 292.0
-offset_top = 182.0
-offset_right = 318.0
-offset_bottom = 208.0
-texture_normal = ExtResource("5_l76k5")
-texture_pressed = ExtResource("5_l76k5")
-texture_hover = ExtResource("5_l76k5")
-texture_disabled = ExtResource("5_l76k5")
-texture_focused = ExtResource("5_l76k5")
+texture_normal = SubResource("AtlasTexture_gberv")
+texture_pressed = SubResource("AtlasTexture_k5hik")
+texture_hover = SubResource("AtlasTexture_blndc")
+stretch_mode = 5
 script = ExtResource("4_qecry")
 Value = 2
 
-[node name="Yellow" type="TextureButton" parent="."]
+[node name="Yellow" type="TextureButton" parent="Control/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
-offset_left = 322.0
-offset_top = 182.0
-offset_right = 348.0
-offset_bottom = 208.0
-texture_normal = ExtResource("6_x8xwa")
-texture_pressed = ExtResource("6_x8xwa")
-texture_hover = ExtResource("6_x8xwa")
-texture_disabled = ExtResource("6_x8xwa")
-texture_focused = ExtResource("6_x8xwa")
+texture_normal = SubResource("AtlasTexture_o1fp4")
+texture_pressed = SubResource("AtlasTexture_otppx")
+texture_hover = SubResource("AtlasTexture_c4vre")
+stretch_mode = 5
 script = ExtResource("4_qecry")
 Value = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_8rv5r")
+}
