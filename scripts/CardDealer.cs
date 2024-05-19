@@ -21,8 +21,10 @@ public partial class CardDealer : Node2D {
 		_screensContainer = GetNode<Node>("%ScreensContainer");
 	}
 
-	private void ManageCards(Marker2D owner, string[] cards = null, bool createNew = false) {
-		int cardCount = createNew ? cards.Length : owner.GetChildCount();
+	public void ManageCards(Marker2D from, Marker2D to, string[] cards = null, bool createNew = false) {
+		if (from is null && createNew) return;
+		
+		int cardCount = createNew ? cards.Length : to.GetChildCount();
 		float cardOffsetX = 16f;
 		float rotMax = Mathf.Pi / 10;
 		
@@ -44,10 +46,10 @@ public partial class CardDealer : Node2D {
 				card.Connect(Card.SignalName.ColorCardClicked, new Callable(this, MethodName.PlayCard));
 				card.Connect(Card.SignalName.WildCardClicked, new Callable(this, MethodName.HandleWildCard));
 
-				owner.AddChild(card);
-				card.GlobalPosition = DrawPile.GlobalPosition;
+				to.AddChild(card);
+				card.GlobalPosition = from.GlobalPosition;
 			} else {
-				card = (Card)owner.GetChild(i);
+				card = (Card)to.GetChild(i);
 			}
 
 			Vector2 finalPos = -(card.Size / 2) - new Vector2((float)(cardOffsetX * (cardCount - 1 - i)), k * Mathf.Sqrt(100 - pos * pos) - offset);
@@ -61,12 +63,12 @@ public partial class CardDealer : Node2D {
 	}
 
 	public void DrawCards(Marker2D owner, string[] cards) {
-		ManageCards(owner, cards, true);
+		ManageCards(DrawPile, owner, cards, true);
 		DrawPile.UpdateCardsNumber();
 	}
 
 	public void ArrangeCards(Marker2D owner) {
-		ManageCards(owner);
+		ManageCards(null, owner);
 	}
 
 	public void CheckCardsAvailability() {

@@ -59,7 +59,7 @@ public partial class Game : Node2D {
 		var payload = JsonConvert.DeserializeObject<JObject>(message);
 
 		if (payload is null) return;
-		// GD.Print(payload);
+		GD.Print(payload);
 
 		switch ((string)payload["responseType"]) {
 			case "Game Started": 
@@ -85,28 +85,22 @@ public partial class Game : Node2D {
 				break;
 			}
 			case "Card Played": {
-				GD.Print(payload);
-				PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
-				
-				if (PlayerInfo.IsYourTurn) {
+				if (!PlayerInfo.IsYourTurn) {
 					var oppPlayedCard = (Card)_cardDealer.OpponentHand.GetChild(0);
 					oppPlayedCard.CreateCard((string)payload["discardPile"]);
 					_cardDealer.PlayCard(_cardDealer.OpponentHand, oppPlayedCard);
 					_cardDealer.ArrangeCards(_cardDealer.OpponentHand);
-					
-					_cardDealer.CheckCardsAvailability();
 				}
 
 				break;
 			}
 			case "Card Drawn": {
-				GD.Print(payload);
 				if (PlayerInfo.IsYourTurn) {
 					var drawnCards = payload["drawnCards"].ToObject<string[]>();
 					_cardDealer.DrawCards(_cardDealer.Hand, drawnCards);
 					_cardDealer.ArrangeCards(_cardDealer.Hand);
-					
-					_cardDealer.CheckCardsAvailability();
+
+					_drawPile.UpdateCardsNumber();
 				} else {
 					var oppCards = new string[(int)payload["opponentCardsDrawnNumber"]];
 					for (int i = 0; i < (int)payload["opponentCardsDrawnNumber"]; i++) {
@@ -120,6 +114,24 @@ public partial class Game : Node2D {
 				
 				break;
 			}
+			case "Card Swapped": {
+				var newCards = payload["newCards"].ToObject<string[]>();
+
+				foreach(var card in _cardDealer.OpponentHand.GetChildren().Cast<Card>()) {
+					_cardDealer.OpponentHand.RemoveChild(card);
+				}
+
+				var oldCards = new string[_cardDealer.Hand.GetChildCount()];
+				for (int i = 0; i < oldCards.Length; i++) {
+					oldCards[i] = "Wild_Back";
+					_cardDealer.Hand.GetChild(i).QueueFree();
+				}
+
+				_cardDealer.ManageCards(_cardDealer.Hand, _cardDealer.OpponentHand, oldCards, true);
+				_cardDealer.ManageCards(_cardDealer.OpponentHand, _cardDealer.Hand, newCards, true);
+				
+				break;
+			}
 			case "Game Ended": {
 				var youWon = (bool)payload["winner"];
 
@@ -127,6 +139,16 @@ public partial class Game : Node2D {
 				_screensContainer.AddChild(endScreen);
 				endScreen.SetOutcome(youWon);
 
+				break;
+			}
+			case "Turn Changed": {
+				PlayerInfo.IsYourTurn = (bool)payload["yourTurn"];
+
+				break;
+			}
+			case "Check Cards": {
+				_cardDealer.CheckCardsAvailability();
+				
 				break;
 			}
 			default: break;

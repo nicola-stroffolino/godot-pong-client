@@ -2,13 +2,12 @@ using System;
 using Godot;
 
 public partial class DrawPile : Marker2D {
-    private Control _pile;
     private Button _drawBtn;
     private Card _card;
     private Node2D _pointer;
+    private int _cycle = 100;
 
     public override void _Ready() {
-        _pile = GetNode<Control>("%Pile");
         _drawBtn = GetNode<Button>("%DrawButton");
         _card = (Card)Scenes.Card.Instantiate();
         _card.CreateCard("Wild_Back");
@@ -40,19 +39,12 @@ public partial class DrawPile : Marker2D {
     }
 
     public void UpdateCardsNumber() {
-        var difference = GetChildCount() - GameInfo.DeckCardsNumber;
-        if (difference < 0) { // add cards 
-            for (int i = 0; i < -difference - 1; i++) {
-                _pile.AddChild(_card);
-                _card.Position -= new Vector2(.05f, .05f);
-                _card.ObliterateFromTheFaceOfTheEarth();
+        if (GameInfo.DeckCardsNumber <= _cycle) {
+            _cycle -= 20;
+            if (_cycle < 0) _cycle = 0; // or 100 when deck actually cycles
 
-                _card = (Card)_card.Duplicate();
-            }
-        } else { // remove cards
-            for (int i = 0; i < difference; i++) {
-                _pile.GetChild(_pile.GetChildCount() - 1 - i).QueueFree();
-            }
+            var pileTexture = (AtlasTexture)GD.Load("res://resources/piles/" + _cycle + ".tres");
+            _drawBtn.Icon = pileTexture;
         }
     }
 }

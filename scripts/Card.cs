@@ -93,7 +93,9 @@ public partial class Card : Button {
 	public void HandleWildCard(CardColor color) {
 		Color = color;
 		if (Value.StartsWith("Wild")) Value = Value[4..];
+		var name = Name; 
 		CreateCard(Color, Value);
+		Name = name;
 		
 		OnCardClicked();
 	}
