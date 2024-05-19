@@ -1,0 +1,118 @@
+[gd_scene load_steps=7 format=3 uid="uid://c67w1p37oomtp"]
+
+[ext_resource type="Texture2D" uid="uid://db6bn2whpjp5s" path="res://assets/layers/parallax-space-backgound.png" id="1_bpl7v"]
+[ext_resource type="Script" path="res://scripts/Background.cs" id="1_gtcsp"]
+[ext_resource type="Texture2D" uid="uid://b0me6ffhlaobs" path="res://assets/layers/parallax-space-stars.png" id="2_5lngj"]
+[ext_resource type="Texture2D" uid="uid://bd0x82n3pch3g" path="res://assets/layers/parallax-space-ring-planet.png" id="3_8iqp1"]
+[ext_resource type="Texture2D" uid="uid://ddfwt4b0mlu81" path="res://assets/layers/parallax-space-big-planet.png" id="4_goyhq"]
+[ext_resource type="Texture2D" uid="uid://c8rg0vrio0g6l" path="res://assets/layers/parallax-space-far-planets.png" id="5_3dfx6"]
+
+[node name="ParallaxBackground" type="ParallaxBackground"]
+script = ExtResource("1_gtcsp")
+ScrollSpeed = 50.0
+
+[node name="Void" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_mirroring = Vector2(600, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Void"]
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("1_bpl7v")
+centered = false
+
+[node name="TwoPlanets2" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(1.2, 1.2)
+motion_mirroring = Vector2(600, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="TwoPlanets2"]
+position = Vector2(142.185, 18.68)
+scale = Vector2(1.91, 1.91)
+texture = ExtResource("5_3dfx6")
+centered = false
+
+[node name="RingPlanet2" type="ParallaxLayer" parent="."]
+texture_filter = 1
+position = Vector2(300, 100)
+motion_scale = Vector2(1.5, 1.5)
+motion_offset = Vector2(0, 50)
+motion_mirroring = Vector2(600, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="RingPlanet2"]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_8iqp1")
+centered = false
+
+[node name="BigPlanet" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(1.5, 1.5)
+motion_mirroring = Vector2(700, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="BigPlanet"]
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("4_goyhq")
+centered = false
+
+[node name="RingPlanet" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(2, 2)
+motion_offset = Vector2(0, 50)
+motion_mirroring = Vector2(600, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="RingPlanet"]
+position = Vector2(0, -44.405)
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("3_8iqp1")
+centered = false
+
+[node name="TwoPlanets" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(2.5, 2.5)
+motion_mirroring = Vector2(600, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="TwoPlanets"]
+position = Vector2(0, 150)
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("5_3dfx6")
+centered = false
+flip_h = true
+
+[node name="Stars" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(3, 3)
+motion_mirroring = Vector2(600, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Stars"]
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("2_5lngj")
+centered = false
+
+[node name="Stars2" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(3, 3)
+motion_mirroring = Vector2(600, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Stars2"]
+position = Vector2(0, -100)
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("2_5lngj")
+centered = false
+flip_h = true
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -236.0
+offset_top = -25.0
+offset_right = -3.0
+offset_bottom = -2.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 0.411765)
+theme_override_font_sizes/font_size = 9
+text = "Artwork created by Luis Zuno (@ansimuz)"
+horizontal_alignment = 2
+vertical_alignment = 2

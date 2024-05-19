@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dacs60hmm6d7w"]
+[gd_scene load_steps=3 format=3 uid="uid://dacs60hmm6d7w"]
 
 [ext_resource type="Script" path="res://scripts/StartMenu.cs" id="1_1uqu2"]
+[ext_resource type="PackedScene" uid="uid://c67w1p37oomtp" path="res://scenes/background.tscn" id="2_a2nhs"]
 
 [node name="StartMenu" type="CenterContainer"]
 anchors_preset = 15
@@ -10,6 +11,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1uqu2")
 metadata/_edit_use_anchors_ = true
+
+[node name="ParallaxBackground" parent="." instance=ExtResource("2_a2nhs")]
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(600, 300)

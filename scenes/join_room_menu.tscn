@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://tddu16ahb3r1"]
+[gd_scene load_steps=3 format=3 uid="uid://tddu16ahb3r1"]
 
 [ext_resource type="Script" path="res://scripts/JoinRoomMenu.cs" id="1_t75x5"]
+[ext_resource type="PackedScene" uid="uid://c67w1p37oomtp" path="res://scenes/background.tscn" id="2_2lvgn"]
 
 [node name="JoinRoomMenu" type="CenterContainer"]
 anchors_preset = 15
@@ -10,6 +11,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_t75x5")
 metadata/_edit_use_anchors_ = true
+
+[node name="ParallaxBackground" parent="." instance=ExtResource("2_2lvgn")]
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(600, 300)
@@ -47,7 +50,6 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 30)
 layout_mode = 2
-text = "Prova"
 placeholder_text = "Room Name"
 alignment = 1
 
@@ -59,7 +61,6 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 30)
 layout_mode = 2
-text = "12345"
 placeholder_text = "Room Password"
 alignment = 1
 
@@ -71,7 +72,6 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 30)
 layout_mode = 2
-text = "Peppe"
 placeholder_text = "Your Nickname"
 alignment = 1
 

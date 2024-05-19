@@ -25,6 +25,11 @@ window/stretch/mode="viewport"
 
 project/assembly_name="UNO Multiplayer"
 
+[gui]
+
+theme/custom="res://resources/themes/MinimalUI.tres"
+theme/custom_font="res://resources/themes/OpenSans-Regular.ttf"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=3
